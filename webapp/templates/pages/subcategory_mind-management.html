@@ -1,0 +1,392 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+<a href="{% url 'category_list' %}" class="button">Back to Categories</a>
+<style>
+    
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3ea086; /* Green background */
+        color: white; /* White text */
+        text-decoration: none;
+        border-radius: 5px; /* Rounded corners */
+        transition: background-color 0.3s ease; /* Smooth transition */
+        margin-left: 1350px;
+    }
+
+        .button:hover {
+            background-color: #2c7763; /* Darker green on hover */
+        }
+        </style>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+
+<style>
+
+    .game-container {
+        margin: 20px;
+        text-align: center;
+        margin-left: 170px;
+    }
+
+    .stars-container {
+        margin-top: 10px; /* Moved closer to the score */
+        display: flex;
+        justify-content: center;
+    }
+
+    .trophy-container {
+        margin-top: 20px;
+        font-size: 1.5rem;
+        color: gold;
+        font-weight: bold;
+        animation: trophy-bounce 1s infinite;
+    }
+
+    @keyframes trophy-bounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .game-boxes {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 30px;
+    }
+
+    .thought-box {
+        width: 200px;
+        height: 300px;
+        border: 2px solid #ccc;
+        padding: 10px;
+    }
+
+    .thought {
+    margin: 10px;
+    padding: 10px;
+    background-color: rgba(56, 185, 147, 0.5); /* Semi-transparent green */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Smooth hover effect */
+}
+
+.thought:hover {
+    background-color: #4c867c; /* Solid green on hover */
+}
+
+
+    .stars-container {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .star {
+        width: 30px;
+        height: 30px;
+        background-color: lightgrey;
+        clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        margin: 0 5px;
+        transition: background-color 0.3s ease;
+    }
+
+        .star.yellow {
+            background-color: yellow;
+        }
+
+    #score {
+        margin-top: 20px;
+    }
+</style>
+
+
+
+<div class="game-container">
+    <h1>Cognitive Reframing Activity</h1>
+    <p>Drag and drop thoughts into the correct category: Positive or Negative</p>
+
+    <div class="game-boxes">
+        <div class="thought-box positive-box">
+            <h2>Positive Thoughts</h2>
+        </div>
+        <div class="thought-box negative-box">
+            <h2>Negative Thoughts</h2>
+        </div>
+    </div>
+
+    <div class="thoughts-container">
+        <!-- Existing thoughts -->
+        <div class="thought" draggable="true" id="thought1">I can achieve anything I work towards.</div>
+        <div class="thought" draggable="true" id="thought2">I am not good enough.</div>
+        <div class="thought" draggable="true" id="thought3">I am capable of overcoming challenges.</div>
+        <div class="thought" draggable="true" id="thought4">Things never work out for me.</div>
+        <div class="thought" draggable="true" id="thought5">I have the strength to overcome any obstacle.</div>
+        <div class="thought" draggable="true" id="thought6">I am worthy of love and respect.</div>
+        <div class="thought" draggable="true" id="thought7">I am growing and learning every day.</div>
+        <div class="thought" draggable="true" id="thought8">I can make a difference in the world.</div>
+        <div class="thought" draggable="true" id="thought9">My potential is limitless.</div>
+        <div class="thought" draggable="true" id="thought10">I can handle whatever comes my way.</div>
+        <div class="thought" draggable="true" id="thought11">I deserve to be happy.</div>
+        <div class="thought" draggable="true" id="thought12">I am proud of my achievements.</div>
+        <div class="thought" draggable="true" id="thought13">I have a supportive network of friends and family.</div>
+        <div class="thought" draggable="true" id="thought14">I can turn challenges into opportunities.</div>
+        <div class="thought" draggable="true" id="thought15">I always mess things up.</div>
+        <div class="thought" draggable="true" id="thought16">I will never be successful.</div>
+        <div class="thought" draggable="true" id="thought17">I don't fit in anywhere.</div>
+        <div class="thought" draggable="true" id="thought18">I am a burden to others.</div>
+        <div class="thought" draggable="true" id="thought19">I can't control my anxiety.</div>
+        <div class="thought" draggable="true" id="thought20">I am constantly failing.</div>
+        <div class="thought" draggable="true" id="thought21">I will never find happiness.</div>
+        <div class="thought" draggable="true" id="thought22">I am not deserving of good things.</div>
+        <div class="thought" draggable="true" id="thought23">I can't change who I am.</div>
+        <div class="thought" draggable="true" id="thought24">I will always be alone.</div>
+        <div class="thought" draggable="true" id="thought25">I can be better</div>
+    </div>
+
+    <div id="feedback"></div>
+    <p id="score">Score: 0</p>
+
+    <div class="stars-container" id="stars">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <div class="trophy-container" id="trophy" style="display: none;">
+        🏆 Congratulations! You’ve completed the game! 🏆
+    </div>
+
+</div>
+
+<script>
+    let score = 0; // Tracks the player's score
+    let categorizedThoughts = 0; // Tracks how many thoughts have been categorized
+    const totalThoughts = document.querySelectorAll('.thought').length; // Total number of thoughts
+    const scoreDisplay = document.getElementById('score'); // Score display element
+    const stars = document.querySelectorAll('.star'); // Star elements
+    const feedback = document.getElementById('feedback'); // Feedback message element
+    const trophy = document.getElementById('trophy'); // Trophy container element
+
+    // Select positive and negative boxes
+    const positiveBox = document.querySelector('.positive-box');
+    const negativeBox = document.querySelector('.negative-box');
+
+    // Select all draggable thoughts
+    const thoughts = document.querySelectorAll('.thought');
+
+    // Add drag event listeners to thoughts
+    thoughts.forEach((thought) => {
+        thought.addEventListener('dragstart', dragStart);
+        thought.addEventListener('dragend', dragEnd);
+    });
+
+    // Add drop event listeners to positive and negative boxes
+    positiveBox.addEventListener('dragover', allowDrop);
+    positiveBox.addEventListener('drop', dropPositive);
+
+    negativeBox.addEventListener('dragover', allowDrop);
+    negativeBox.addEventListener('drop', dropNegative);
+
+    // Drag event handlers
+    function dragStart(e) {
+        e.dataTransfer.setData('text', e.target.id);
+        e.target.classList.add('dragging');
+    }
+
+    function dragEnd(e) {
+        e.target.classList.remove('dragging');
+    }
+
+    function allowDrop(e) {
+        e.preventDefault();
+    }
+
+    function dropPositive(e) {
+        const id = e.dataTransfer.getData('text');
+        const draggedThought = document.getElementById(id);
+
+        if (!draggedThought) return; // Ensure the thought exists
+
+        if (isPositiveThought(draggedThought)) {
+            feedback.textContent = "Correct! That's a positive thought!";
+            updateScore(1); // Increment score
+            hideThought(draggedThought); // Hide thought
+        } else {
+            feedback.textContent = "Oops! That's a negative thought.";
+            // No score update for incorrect categorization
+        }
+    }
+
+    // Drop into Negative box
+    function dropNegative(e) {
+        const id = e.dataTransfer.getData('text');
+        const draggedThought = document.getElementById(id);
+
+        if (!draggedThought) return; // Ensure the thought exists
+
+        if (isNegativeThought(draggedThought)) {
+            feedback.textContent = "Correct! That's a negative thought!";
+            updateScore(1); // Increment score
+            hideThought(draggedThought); // Hide thought
+        } else {
+            feedback.textContent = "Oops! That's a positive thought.";
+            // No score update for incorrect categorization
+        }
+    }
+    function updateScore(points) {
+        score += points;
+        scoreDisplay.textContent = `Score: ${score}`;
+        updateStars(); // Update stars
+
+        // Show confetti every time the score is a multiple of 5
+        if (score % 5 === 0) {
+            showConfetti(); // Trigger confetti effect
+        }
+
+        // Check if all thoughts are categorized
+        if (categorizedThoughts === totalThoughts) {
+            showTrophy();
+        }
+
+        saveScoreToDatabase(score); // Send updated score to the server
+    }
+
+    function showConfetti() {
+        console.log("Confetti triggered!");  // Debugging line to confirm the function is triggered
+
+        confetti({
+            particleCount: 200,  // Increase particle count for a more dramatic effect
+            spread: 90,          // Spread the particles more widely
+            origin: { x: 0.5, y: 0.5 },  // Origin set to the center of the screen
+            particleSize: 10,    // Increase the size of particles
+            gravity: 0.3,        // Slows down the fall of the confetti
+            ticks: 200,          // Makes the confetti last a bit longer
+            colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff'] // Customize colors (optional)
+        });
+    }
+
+    // Save the score to the database
+    function saveScoreToDatabase(score) {
+        fetch("/categories/meaning-focused/mind-management/save-score/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"), // Include the CSRF token
+            },
+            body: JSON.stringify({ score: score }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data.message || data.error);
+            })
+            .catch((error) => {
+                console.error("Error saving score:", error);
+            });
+    }
+
+    // Retrieve CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith(name + "=")) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function isPositiveThought(thought) {
+        const positiveThoughts = [
+            "I can achieve anything I work towards.",
+            "I am capable of overcoming challenges.",
+            "I have the strength to overcome any obstacle.",
+            "I am worthy of love and respect.",
+            "I am growing and learning every day.",
+            "I can make a difference in the world.",
+            "My potential is limitless.",
+            "I can handle whatever comes my way.",
+            "I deserve to be happy.",
+            "I am proud of my achievements.",
+            "I have a supportive network of friends and family.",
+            "I can turn challenges into opportunities.",
+            "I can be better",
+        ];
+        const thoughtText = thought.textContent.trim().toLowerCase(); // Normalize text
+        return positiveThoughts.some((t) => t.toLowerCase() === thoughtText);
+    }
+
+    // Check if a thought is negative
+    function isNegativeThought(thought) {
+        const negativeThoughts = [
+            "I am not good enough.",
+            "Things never work out for me.",
+            "I always mess things up.",
+            "I will never be successful.",
+            "I don't fit in anywhere.",
+            "I am a burden to others.",
+            "I can't control my anxiety.",
+            "I am constantly failing.",
+            "I will never find happiness.",
+            "I am not deserving of good things.",
+            "I can't change who I am.",
+            "I will always be alone.",
+        ];
+        const thoughtText = thought.textContent.trim().toLowerCase(); // Normalize text
+        return negativeThoughts.some((t) => t.toLowerCase() === thoughtText);
+    }
+
+    // Hide the thought after it's categorized
+    function hideThought(thought) {
+        thought.style.display = "none";
+        categorizedThoughts++; // Increment categorized thoughts count
+    }
+
+    // Update the stars based on the score
+    function updateStars() {
+        const yellowStarsCount = Math.floor(score / 5); // Each 5 points = 1 yellow star
+        stars.forEach((star, index) => {
+            if (index < yellowStarsCount) {
+                star.classList.add("yellow");
+            } else {
+                star.classList.remove("yellow");
+            }
+        });
+    }
+
+    // Show the trophy when all thoughts are categorized
+    function showTrophy() {
+        trophy.style.display = "block";
+        feedback.textContent = "Well done! You've categorized all thoughts.";
+    }
+
+</script>
+
+<style>
+    /* Add your styles here */
+    .dragging {
+        opacity: 0.5;
+        border: 2px dashed #888;
+    }
+
+    .star.yellow {
+        background-color: gold;
+    }
+</style>
+
+
+
+
+
+{% endblock %}

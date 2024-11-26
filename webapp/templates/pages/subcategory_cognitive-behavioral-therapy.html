@@ -1,0 +1,366 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<a href="{% url 'category_list' %}" class="button">Back to Categories</a>
+<style>
+    
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3ea086; /* Green background */
+        color: white; /* White text */
+        text-decoration: none;
+        border-radius: 5px; /* Rounded corners */
+        transition: background-color 0.3s ease; /* Smooth transition */
+        margin-left: 1350px;
+    }
+
+        .button:hover {
+            background-color: #2c7763; /* Darker green on hover */
+        }
+        </style>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.min.js"></script>
+
+<div class="game-container">
+    <header>
+        <h1>Cognitive Reframing Game</h1> <br>
+        <p>Reframe the situation to reduce anxiety. Select the best option!</p>
+        <br>
+    </header>
+
+    <section class="game-content">
+        <div id="scenario-display" class="scenario-display"></div>
+        <div class="reframing-options" id="reframing-options">
+            <button class="option-btn" onclick="selectOption(0)"></button>
+            <button class="option-btn" onclick="selectOption(1)"></button>
+            <button class="option-btn" onclick="selectOption(2)"></button>
+        </div>
+        <div id="feedback" class="feedback"></div>
+        <button id="next-scenario" class="next-btn" onclick="nextScenario()" style="display: none;">Next Scenario</button>
+        <div id="score-display" class="score-display">Score: 0</div> <!-- Display for the score -->
+    </section>
+</div>
+
+<style> 
+    .score-display {
+        font-size: 24px; /* Increased font size */
+        color: #333;
+        margin-top: 10px;
+    }
+
+    .game-container {
+        width: 80%;
+        max-width: 600px;
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        color: #16a085;
+        font-size: 32px; /* Increased font size for the header */
+    }
+
+    .scenario-display {
+        font-size: 26px; /* Increased font size for the scenario text */
+        margin-bottom: 20px;
+    }
+
+    .reframing-options {
+        margin-bottom: 20px;
+    }
+
+    .option-btn {
+        background-color: #16a085;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 20px 40px; /* Increased padding for larger buttons */
+        margin: 10px;
+        cursor: pointer;
+        font-size: 20px; /* Increased font size for options */
+        width: 100%;
+    }
+
+    .feedback {
+        font-size: 24px; /* Increased font size for feedback */
+        margin-bottom: 20px;
+        color: #16a085;
+    }
+
+    .next-btn {
+        background-color: #16a085;
+        color: white;
+        padding: 15px 30px; /* Increased padding for the next button */
+        font-size: 22px; /* Increased font size for the next button */
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+// Define the scenarios and reframing options
+const scenarios = [
+    {
+        scenario: "I have a big presentation tomorrow and I feel nervous.",
+        options: [
+            "I can prepare better by practicing tonight.",
+            "I might fail and everyone will laugh at me.",
+            "Maybe I shouldn't do the presentation at all."
+        ],
+        feedback: [
+            "Good choice! Preparing is a positive way to take control of the situation.",
+            "This is negative thinking. You have the skills, and you can do it!",
+            "Avoiding the situation won't help. Preparing will reduce anxiety."
+        ]
+    },
+    {
+        scenario: "I have a lot of tasks at work and I feel overwhelmed.",
+        options: [
+            "I will take one task at a time and focus on completing them.",
+            "I'm going to fall behind and get fired.",
+            "I should just quit my job and avoid all tasks."
+        ],
+        feedback: [
+            "Great! Breaking tasks down can help reduce stress and make it manageable.",
+            "This is a negative thought. You can manage your tasks with the right approach.",
+            "Quitting won't solve the issue. Prioritize tasks and take it step by step."
+        ]
+    },
+    {
+        scenario: "I have an argument with a close friend.",
+        options: [
+            "I should talk it out calmly and listen to their point of view.",
+            "They'll never understand my side, so it's not worth it.",
+            "It's better to just ignore it and not talk to them anymore."
+        ],
+        feedback: [
+            "Excellent! Communication and listening can resolve conflicts positively.",
+            "Avoiding the issue will create more tension. Try understanding their perspective.",
+            "Ignoring the problem may make it worse. Communicate to find a solution."
+        ]
+    },
+    {
+        scenario: "I failed an exam and I'm afraid I won't succeed in the future.",
+        options: [
+            "I will review the mistakes and improve next time.",
+            "I'm terrible at exams and should give up on studying.",
+            "It’s too late for me to change anything now."
+        ],
+        feedback: [
+            "Great! Learning from mistakes and improving is the best approach.",
+            "Negative self-talk is not helpful. You can always improve with effort.",
+            "It's never too late to learn. Use the experience to grow."
+        ]
+    },
+    {
+        scenario: "I feel anxious about a job interview coming up.",
+        options: [
+            "I will prepare well and trust in my abilities.",
+            "I’m sure I’ll mess up, and I won’t get the job.",
+            "It’s better not to go at all and avoid the disappointment."
+        ],
+        feedback: [
+            "Positive! Preparing will help boost your confidence and performance.",
+            "This thought is limiting. You have the skills for the job, trust yourself.",
+            "Avoiding the interview won't solve anything. Preparation is key."
+        ]
+    },
+    {
+        scenario: "I'm struggling with my health and feel hopeless.",
+        options: [
+            "I can seek support and focus on small improvements each day.",
+            "There’s nothing I can do about it, and I should accept it.",
+            "It’s better to ignore it and pretend everything is fine."
+        ],
+        feedback: [
+            "Excellent! Seeking help and focusing on progress will empower you.",
+            "Acceptance is okay, but taking action can improve your situation.",
+            "Ignoring health problems might worsen the situation. Take small steps."
+        ]
+    },
+    {
+        scenario: "I feel like I can't handle all my responsibilities.",
+        options: [
+            "I will delegate tasks and focus on what I can control.",
+            "I'm too overwhelmed. I should just stop trying.",
+            "There's no way out, and I'm trapped in these responsibilities."
+        ],
+        feedback: [
+            "Perfect! Delegating and focusing on what you can do will reduce stress.",
+            "It's important to manage stress in small steps. Don't give up.",
+            "You can change how you approach tasks. Break them down into manageable parts."
+        ]
+    },
+    {
+        scenario: "I keep thinking about a mistake I made in the past.",
+        options: [
+            "I will learn from the mistake and move forward with greater knowledge.",
+            "I am defined by that mistake and will never be able to fix it.",
+            "It’s better to stay stuck in the past than to move on."
+        ],
+        feedback: [
+            "Good! Learning from mistakes is key to growth and resilience.",
+            "You are not defined by your past. Let it teach you, not trap you.",
+            "Staying in the past prevents you from growing. Focus on the future."
+        ]
+    },
+    {
+        scenario: "I’m feeling isolated and disconnected from others.",
+        options: [
+            "I will reach out to someone I trust and talk about how I feel.",
+            "No one understands me, so there’s no point in trying to connect.",
+            "It's better to just keep my feelings to myself and not burden anyone."
+        ],
+        feedback: [
+            "Great choice! Sharing feelings with others can reduce isolation.",
+            "This is a negative thought. People care about you and will listen.",
+            "Keeping feelings inside may make things worse. Reach out for support."
+        ]
+    },
+    {
+        scenario: "I’m afraid of making the wrong decision in my career.",
+        options: [
+            "I will take time to evaluate my options and make a thoughtful choice.",
+            "I’m stuck, and I’ll never make the right decision.",
+            "It’s better to not make any decision than to risk the wrong one."
+        ],
+        feedback: [
+            "Smart! Taking time to evaluate options helps in making informed decisions.",
+            "This thought creates unnecessary pressure. You can make a decision and adjust later.",
+            "Avoiding decisions doesn’t help. We learn from both successes and failures."
+        ]
+    },
+    // Additional 10 questions
+    {
+        scenario: "I feel overwhelmed with my workload and unsure where to start.",
+        options: [
+            "I will prioritize tasks and start with the most important one.",
+            "I'm never going to finish, so why bother?",
+            "I’ll just ignore my workload and hope it gets better."
+        ],
+        feedback: [
+            "Good choice! Prioritizing tasks reduces anxiety and improves productivity.",
+            "This thought doesn't help. Breaking tasks down makes them more manageable.",
+            "Avoiding the work will only increase the stress. Start with one task."
+        ]
+    },
+    {
+        scenario: "I feel nervous about meeting new people.",
+        options: [
+            "I will focus on getting to know them and being myself.",
+            "I'm not good at making friends, so it’s better to avoid it.",
+            "It's better to stay in my comfort zone and not meet anyone new."
+        ],
+        feedback: [
+            "Great! Being yourself and engaging with others helps build connections.",
+            "This thought is limiting. Everyone feels nervous sometimes, but engaging helps.",
+            "Staying in your comfort zone limits growth. Take small steps to engage."
+        ]
+    },
+    {
+        scenario: "I'm feeling anxious about an upcoming event.",
+        options: [
+            "I will prepare for the event and take things one step at a time.",
+            "I'm going to panic and make things worse.",
+            "I’ll skip the event to avoid the stress."
+        ],
+        feedback: [
+            "Good approach! Preparation helps reduce anxiety and increases confidence.",
+            "Panicking only makes things harder. Taking small steps will help.",
+            "Avoiding the event doesn't solve the issue. Face it with preparation."
+        ]
+    },
+];
+
+let currentScenarioIndex = 0;
+let score = 0;
+let scoredThisScenario = false;
+
+// Display the first scenario
+function displayScenario() {
+    const scenario = scenarios[currentScenarioIndex];
+    document.getElementById('scenario-display').textContent = scenario.scenario;
+    
+    // Randomly shuffle options and feedback
+    let options = [...scenario.options];
+    let correctAnswer = Math.floor(Math.random() * 3);
+    options = shuffleArray(options);
+
+    // Display the shuffled options
+    const optionButtons = document.querySelectorAll('.option-btn');
+    optionButtons.forEach((button, index) => {
+        button.textContent = options[index];
+    });
+
+    scenario.correctAnswer = options.indexOf(scenario.options[correctAnswer]);
+
+    document.getElementById('feedback').textContent = '';
+    document.getElementById('next-scenario').style.display = 'none';
+    scoredThisScenario = false;
+}
+
+// Shuffle function to randomize the array
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+// Handle option selection
+function selectOption(index) {
+    const scenario = scenarios[currentScenarioIndex];
+    const feedbackText = scenario.feedback[index];
+    document.getElementById('feedback').textContent = feedbackText;
+
+    if (index === scenario.correctAnswer && !scoredThisScenario) {
+        score++;
+        scoredThisScenario = true;
+        document.getElementById('score-display').textContent = `Score: ${score}`;
+        if (score % 5 === 0) {
+            showCongratulatoryMessage();
+        }
+        confetti({ particleCount: 100, spread: 70, origin: { x: 0.5, y: 0.5 } });
+    }
+
+    document.getElementById('next-scenario').style.display = 'inline-block';
+}
+
+// Show congratulatory message
+function showCongratulatoryMessage() {
+    const congratulatoryMessage = document.createElement('div');
+    congratulatoryMessage.textContent = `Congratulations! You've reached ${score} points! Keep it up!`;
+    congratulatoryMessage.style.fontSize = '20px';
+    congratulatoryMessage.style.color = '#4CAF50';
+    congratulatoryMessage.style.marginTop = '20px';
+    congratulatoryMessage.style.fontWeight = 'bold';
+    document.getElementById('game-container').appendChild(congratulatoryMessage);
+
+    confetti({ particleCount: 150, spread: 80, origin: { y: 0.7 } });
+
+    setTimeout(() => congratulatoryMessage.remove(), 3000);
+}
+
+// Show next scenario
+function nextScenario() {
+    currentScenarioIndex++;
+    if (currentScenarioIndex < scenarios.length) {
+        displayScenario();
+    } else {
+        document.getElementById('scenario-display').textContent = "You've completed the game! Great job reframing your thoughts!";
+        document.getElementById('reframing-options').style.display = 'none';
+        document.getElementById('next-scenario').style.display = 'none';
+    }
+}
+
+// Initialize game
+displayScenario();
+
+</script>
+
+{% endblock %}

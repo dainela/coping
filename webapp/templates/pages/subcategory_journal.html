@@ -1,0 +1,188 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+<a href="{% url 'category_list' %}" class="button">Back to Categories</a>
+<style>
+    
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3ea086; /* Green background */
+        color: white; /* White text */
+        text-decoration: none;
+        border-radius: 5px; /* Rounded corners */
+        transition: background-color 0.3s ease; /* Smooth transition */
+        margin-left: 1350px;
+    }
+
+        .button:hover {
+            background-color: #2c7763; /* Darker green on hover */
+        }
+        </style>
+<div class="notebook-container">
+    <div class="notebook-spiral"></div>
+    <div class="journal-notebook-form">
+        <h2>{{ form.instance.pk|yesno:"Edit,New" }} Journal</h2>
+        <form class = "journal" method="post">
+            {% csrf_token %}
+            <div class="journal-form-group">
+                <label for="id_title">Title</label>
+                {{ form.title }}
+            </div>
+            <div class="journal-form-group">
+                <label for="id_content">Content</label>
+                {{ form.content }}
+            </div>
+            <button type="submit" class="journal-btn journal-btn-submit">Save</button>
+        </form>
+    </div>
+
+    {% if entries %}
+    <div class="entries-section">
+        <h3>Previous Entries</h3>
+        <ul class="entries-list">
+            {% for entry in entries %}
+            <li>
+                <div class="entry-item">
+                    <h4>{{ entry.title }}</h4>
+                    <p>{{ entry.content }}</p>
+                    <small>{{ entry.created_at }}</small><br />
+                    <div class="entry-actions">
+                        <a href="{% url 'edit_journal_entry' entry.id %}" class="journal-btn journal-btn-edit">Edit</a>
+
+                        <form method="POST" action="{% url 'delete_journal_entry' entry.id %}" class="delete-form" onsubmit="return confirmDelete()">
+                            {% csrf_token %}
+                            <button type="submit" class="journal-btn journal-btn-delete">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% else %}
+    <p>No previous entries found.</p>
+    {% endif %}
+</div>
+
+<style>
+
+    .journal{
+        background-color: transparent;
+    }
+
+    /* journal */
+.notebook-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 100px;
+    position: relative;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: linear-gradient(#38b993 24px, #e9e9e9 25px);
+    background-size: 100% 25px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    margin-top: -1px;
+}
+
+.notebook-spiral {
+    position: absolute;
+    left: -30px;
+    top: 0;
+    width: 30px;
+    height: 100%;
+    background: radial-gradient(circle, transparent 16px, #333 17px, #333 25px, transparent 26px);
+    background-size: 30px 50px;
+}
+
+.journal-notebook-form {
+    padding: 10px;
+
+}
+
+.journal-notebook-form .h2,.h3, .h4, .p, .small{
+    color: white;
+}
+
+.journal-notebook-form {
+    max-width: 1200px; /* Increase the max-width to make the form wider */
+    margin: 20px auto;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+.journal-form-group input[type="text"],
+.journal-form-group textarea {
+    width: 200%; /* Ensure the input fields take full width */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    resize: vertical; /* Allows textarea to be resized vertically */
+    background-color: #fff;
+    
+}
+
+.journal-form-group textarea {
+    height: 250px; /* Increase height for textarea */
+}
+
+.journal-btn {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #23795f;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    font-size: 1em;
+    margin-left: 20px;
+    margin-top: 30px;
+}
+
+.journal-btn:hover {
+    background-color: #1e6852;
+}
+
+
+
+.journal-btn-submit {
+    width: 100%;
+}
+
+.entry-actions a {
+    margin-left: 40px;
+}
+
+
+.entries-section {
+    max-width: 1000px; /* Make entries section as wide as the form */
+    margin: 40px auto;
+}
+
+
+.entries-list {
+    list-style-type: none;
+    padding: 0;
+
+}
+
+    .entries-list li {
+        background-color: #38b993;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .entries-list h4 {
+        margin: 0;
+        font-size: 1.2em;
+    }
+
+
+</style>
+
+{% endblock %}

@@ -1,0 +1,580 @@
+﻿{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+
+<a href="{% url 'category_list' %}" class="button">Back to Categories</a>
+<style>
+    
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3ea086; /* Green background */
+        color: white; /* White text */
+        text-decoration: none;
+        border-radius: 5px; /* Rounded corners */
+        transition: background-color 0.3s ease; /* Smooth transition */
+        margin-left: 1350px;
+    }
+
+        .button:hover {
+            background-color: #2c7763; /* Darker green on hover */
+        }
+        </style>
+<div class="likod">
+
+</div>
+
+<div class="exercise-guide">
+    <h1>Exercise Guide</h1>
+    <input type="text" id="search" placeholder="Search for exercises..." onkeyup="filterExercises()">
+    <div id="progress-tracker" class="progress-tracker"> <center></center> <br> <br> </div>
+    <div id="balloon-container" class="balloon-container"></div>
+
+    <div class="exercise-list">
+
+        <div class="exercise-item">
+            <img alt="squats" class="exercise-image" src="{% static 'media/squat.png' %}">
+            <h2>Squats</h2>
+            <p>
+                Squats are a great way to strengthen your core and lower body. And because you’re using large muscles, they burn lots of calories. <br><br>
+                1. Stand with your feet slightly wider than your shoulders and your arms at your side. <br><br>
+                2. Keeping your chin up, bend your knees and move your hips backward like you’re going to sit in a chair. Bring your hands together in front of you near your chest.<br><br>
+                3.Continue lowering your body until your thighs are parallel to the ground. Hold for one second and then return to the starting position. <br><br>
+                4. Do 3 sets of 20 reps. <br><br>
+                <button class="check-btn" data-exercise="Squats" onclick="markComplete(event, 'Squats')" disabled>Check</button>
+                <!-- Timer Section -->
+                <div class="timer-section">
+                    <button class="start-btn" data-exercise="Squats" onclick="startTimer('Squats')">Start Timer</button>
+                    <span id="timer-Squats" class="timer-display">00:00</span>
+                </div>
+        </div>
+
+        <div class="exercise-item">
+            <img alt="pushup" class="exercise-image" src="{% static 'media/pushup.png' %}">
+            <h2>Pushup</h2>
+            <p>
+                Pushups involve multiple muscle groups and are a highly effective strengthening exercise. <br> <br>
+                1. Start in the plank position with your back straight, legs extended, toes on the floor, arms extended, and hands flat on the floor below your shoulders. <br> <br>
+                2. Bend your elbows to lower your body until your chest touches the floor.<br> <br>
+                3. Extend your arms, pushing your body up off the floor, until your elbows lock.<br> <br>
+                4. Do 3 sets of as many reps as you can. If you aren’t able to do a standard pushup, you can leave your knees on the floor rather than your toes. <br> <br>
+
+            </p>
+            <button class="check-btn" data-exercise="Pushup" onclick="markComplete(event, 'Pushup')" disabled>Check</button>
+            <!-- Timer Section -->
+            <div class="timer-section">
+                <button class="start-btn" data-exercise="Pushup" onclick="startTimer('Pushup')">Start Timer</button>
+                <span id="timer-Pushup" class="timer-display">00:00</span>
+            </div>
+        </div>
+
+        <div class="exercise-item">
+            <img alt="lunges" class="exercise-image" src="{% static 'media/lunges.png' %}">
+            <h2>Lunges</h2>
+            <p>
+                Lunges strengthen your legs and glutes, stretching the muscles at the same time. <br> <br>
+                1. Stand with your arms at your side and your feet shoulder-width apart. <br> <br>
+                2. Step forward with your right foot, bending your right knee as you do. Step far enough forward that your right knee doesn’t go past your right foot before your right thigh is parallel to the ground. <br> <br>
+                3. Straighten your right leg to return to the starting position. Complete the same actions with your left leg. This is one repetition (or “rep”). <br> <br>
+                4. Do 3 sets of 10 reps.<br>  <br>
+            </p>
+            <button class="check-btn" data-exercise="Lunges" onclick="markComplete(event, 'Lunges')" disabled>Check</button>
+            <!-- Timer Section -->
+            <div class="timer-section">
+                <button class="start-btn" data-exercise="Lunges" onclick="startTimer('Lunges')">Start Timer</button>
+                <span id="timer-Lunges" class="timer-display">00:00</span>
+            </div>
+        </div>
+
+        <div class="exercise-item">
+            <img alt="plank" class="exercise-image" src="{% static 'media/plank.png' %}">
+            <h2>Plank</h2>
+            <p>
+                Planks target your abdominal muscles but give other muscles in your arms and legs a good workout.
+                <br> <br>
+                1. Start with your hands on the floor, your arms extended, and your knees and toes on the floor. <br><br>
+                2. Tuck your chin slightly and look at the ground just in front of your hands. <br> <br>
+                3. Straighten your legs so your knees come off the floor and your body is in a straight line from the back of your head to the back of your heels. <br>
+                4. Hold the position for 30 seconds before bringing your knees back to the floor. <br><br>
+                5. Complete 2-3 sets of as many 30-second holds as you can.<br><br>
+            </p>
+            <button class="check-btn" data-exercise="Plank" onclick="markComplete(event, 'Plank')" disabled>Check</button>
+            <!-- Timer Section -->
+            <div class="timer-section">
+                <button class="start-btn" data-exercise="Plank" onclick="startTimer('Plank')">Start Timer</button>
+                <span id="timer-Plank" class="timer-display">00:00</span>
+            </div>
+        </div>
+
+        <div class="exercise-item">
+            <img alt="burpees" class="exercise-image" src="{% static 'media/burpees.png' %}">
+            <h2>Burpees</h2>
+            <p>
+                Burpees strengthen multiple muscle groups and also provide a great cardiovascular workout. <br><br>
+                1. Stand with your feet shoulder-width apart and your arms at your sides.<br><br>
+                2. Put your hands out in front of you and squat down. When your hands touch the ground, shoot your legs out behind you into the pushup position. <br><br>
+                3. Pull your feet up near your hands in one motion, stand up straight, and jump. This is one rep. <br><br>
+                4. Do 3 sets of 10 reps.<br><br>
+            </p>
+            <button class="check-btn" data-exercise="Burpees" onclick="markComplete(event, 'Burpees')" disabled>Check</button>
+            <!-- Timer Section -->
+            <div class="timer-section">
+                <button class="start-btn" data-exercise="Burpees" onclick="startTimer('Burpees')">Start Timer</button>
+                <span id="timer-Burpees" class="timer-display">00:00</span>
+            </div>
+        </div>
+
+        <div class="exercise-item">
+            <img alt="Overhead dumbbell presses" class="exercise-image" src="{% static 'media/burpees.png' %}">
+            <h2>Overhead dumbbell presses</h2>
+            <p>
+                This exercise uses two 10-pound dumbbells to engage muscles in your shoulders, upper back, and core. <br><br>
+                1. Stand with your feet shoulder-width apart. Position your arms so that your upper arms align with your shoulders, your elbows are bent at a 90-degree angle, and the weights are at head level.<br><br>
+                2. While engaging your core, push the weights up until your arms are fully extended. <br><br>
+                3. Pause, lower your arms until your upper arms align with your shoulders again, and repeat. <br><br>
+                4. Do three sets of 12 reps. <br><br>
+            </p>
+            <button class="check-btn" data-exercise="Overhead dumbbell presses" onclick="markComplete(event, 'Overhead dumbbell presses')" disabled>Check</button>
+            <!-- Timer Section -->
+            <div class="timer-section">
+                <button class="start-btn" data-exercise="Overhead dumbbell presses" onclick="startTimer('Overhead dumbbell presses')">Start Timer</button>
+                <span id="timer-Overhead dumbbell presses" class="timer-display">00:00</span>
+            </div>
+        </div>
+
+        <!-- Single-leg Deadlifts -->
+        <div class="exercise-item">
+            <img alt="single-leg deadlifts" class="exercise-image" src="{% static 'media/single_leg_deadlifts.png' %}">
+            <h2>Single-leg Deadlifts</h2>
+            <p>
+                Using one 10-pound dumbbell, this exercise improves leg strength and balance. <br><br>
+                1. Hold a dumbbell in your right hand with your knees bent slightly.<br><br>
+                2. Rotate your upper body forward at the hips, lifting your left leg straight behind you and moving the dumbbell toward the floor.<br><br>
+                3. Continue raising your leg until it is parallel to the floor or to whatever height you’re comfortable with. Then, slowly lower your leg while lifting the dumbbell and returning to the starting position.<br><br>
+                4. Do 10 reps lifting your left leg, switch the weight to your left hand, and do 10 reps lifting your right leg.<br><br>
+            </p>
+            <button class="check-btn" data-exercise="Single-leg Deadlifts" onclick="markComplete(event, 'Single-leg Deadlifts')" disabled>Check</button>
+            <div class="timer-section">
+                <button class="start-btn" data-exercise="Single-leg Deadlifts" onclick="startTimer('Single-leg Deadlifts')">Start Timer</button>
+                <span id="timer-Single-leg Deadlifts" class="timer-display">00:00</span>
+            </div>
+        </div>
+
+        <!-- Dumbbell Rows -->
+        <div class="exercise-item">
+            <img alt="dumbbell rows" class="exercise-image" src="{% static 'media/dumbbell_rows.png' %}">
+            <h2>Dumbbell Rows</h2>
+            <p>
+                This exercise uses two 10-pound dumbbells and strengthens multiple upper-body muscles. <br><br>
+                1. Hold a dumbbell in each hand.<br><br>
+                2. Position your body at a 45-degree angle to the ground by bending forward at the waist. Ensure your core is engaged and your neck is aligned with your back. Let your arms hang down.<br><br>
+                3. Pull the weight in your right arm up near your chest. Return to the starting position and do the same with your left arm. This is one rep.<br><br>
+                4. Do three sets of 10 reps.<br><br>
+            </p>
+            <button class="check-btn" data-exercise="Dumbbell Rows" onclick="markComplete(event, 'Dumbbell Rows')" disabled>Check</button>
+            <div class="timer-section">
+                <button class="start-btn" data-exercise="Dumbbell Rows" onclick="startTimer('Dumbbell Rows')">Start Timer</button>
+                <span id="timer-Dumbbell Rows" class="timer-display">00:00</span>
+            </div>
+        </div>
+
+        <!-- Side Planks -->
+        <div class="exercise-item">
+            <img alt="side planks" class="exercise-image" src="{% static 'media/side_planks.png' %}">
+            <h2>Side Planks</h2>
+            <p>
+                Side planks help strengthen your core. <br><br>
+                1. Start on the floor lying on your right side with your legs straight together and your left foot stacked on top of your right. Prop up your upper body by putting your right elbow under your right shoulder and your forearm flat on the floor.<br><br>
+                2. Lift your hips and knees off the ground to make a straight line with your body.<br><br>
+                3. Lower your hips back to the floor and repeat.<br><br>
+                4. Do three sets of 10 on each side.<br><br>
+            </p>
+            <button class="check-btn" data-exercise="Side Planks" onclick="markComplete(event, 'Side Planks')" disabled>Check</button>
+            <div class="timer-section">
+                <button class="start-btn" data-exercise="Side Planks" onclick="startTimer('Side Planks')">Start Timer</button>
+                <span id="timer-Side Planks" class="timer-display">00:00</span>
+            </div>
+        </div>
+
+        <!-- Glute Bridge -->
+        <div class="exercise-item">
+            <img alt="glute bridge" class="exercise-image" src="{% static 'media/glute_bridge.png' %}">
+            <h2>Glute Bridge</h2>
+            <p>
+                This exercise strengthens your glutes. <br><br>
+                1. Lie on your back with your feet flat on the floor, your knees bent, and your arms at your side, palms down.<br><br>
+                2. Push down on your heels to raise your hips off the ground while keeping your shoulders and upper back in contact with the floor.<br><br>
+                3. Hold for a second or two at the top of your lift, then lower your hips back to the floor.<br><br>
+                4. Do three sets of 10 reps.<br><br>
+            </p>
+            <button class="check-btn" data-exercise="Glute Bridge" onclick="markComplete(event, 'Glute Bridge')" disabled>Check</button>
+            <div class="timer-section">
+                <button class="start-btn" data-exercise="Glute Bridge" onclick="startTimer('Glute Bridge')">Start Timer</button>
+                <span id="timer-Glute Bridge" class="timer-display">00:00</span>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+    </div>
+</div>
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+<style>
+    .motivational-message {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #4caf50;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+        opacity: 1;
+        transition: opacity 0.5s ease-out;
+        z-index: 1000;
+    }
+
+    .balloon-container {
+        position: fixed;
+        bottom: 10%;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .balloon {
+        width: 50px;
+        height: 80px;
+        background-color: #ff4081;
+        border-radius: 50%;
+        position: relative;
+        animation: balloonAnimation 2s forwards;
+    }
+
+        .balloon:after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 20px;
+            background-color: #000;
+            left: 50%;
+            bottom: -20px;
+            transform: translateX(-50%);
+        }
+
+    @keyframes balloonAnimation {
+        0% {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: translateY(-50px) scale(1.1);
+            opacity: 0.8;
+        }
+
+        100% {
+            transform: translateY(-200px) scale(1.5);
+            opacity: 0;
+        }
+    }
+    .likod {
+        background-color: #38b993;
+        width: 60%; /* Adjust width as needed */
+        margin: 20px auto; /* Center the container */
+        padding: 90px; /* Add spacing inside the container */
+        border-radius: 10px; /* Optional: rounded corners */
+        color: white; /* Text color for contrast */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
+        text-align: center; /* Optional: center-align text */
+        margin-bottom: -175px;
+    }
+    .exercise-guide {
+        background-color: transparent; /* Fully transparent */
+        color: #fff;
+        margin-top: 175px;
+        width: 50%; /* Palitan ito depende sa gusto mong size */
+        padding: 10px; /* Para sa content spacing */
+        border-radius: 8px; /* Para sa mas magandang edges (optional) */
+        box-shadow: none; /* Alisin ang shadow kung mayroon */
+        margin: 0 auto; /* Para naka-center */
+        margin-top: 30px;
+    }
+
+    .exercise-item:hover {
+        color: #38b993; /* Change text color when hovering over individual exercise items */
+    }
+
+
+    .progress-tracker {
+        color: #38b993;
+    }
+
+    .exercise-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 items per row */
+        gap: 120px; /* Adds gap between items */
+        width: 200%;
+        padding: 20px;
+        box-sizing: border-box;
+        margin-left: -370px;
+    }
+
+    .exercise-item {
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        position: relative;
+        padding: 20px; /* Add padding for better spacing */
+        box-sizing: border-box;
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        background-color: #fff; /* White background for contrast */
+        text-align: center;
+        font-size: 1.2em; /* Larger text */
+        border: 2px solid #38b993;
+        background-color: #38b993;
+    }
+
+        .exercise-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .exercise-item img {
+            border: 2px solid #38b993;
+            width: 100%; /* Make images responsive */
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .exercise-item h2 {
+            font-size: 1.5em; /* Larger heading */
+            margin: 10px 0;
+        }
+
+        .exercise-item p {
+            font-size: 1em;
+            margin: 10px 0;
+        }
+
+    .check-btn {
+        background-color: #23795f;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease; /* Smooth transition for all properties */
+    margin-left: 220px;
+    margin-bottom: -5px;
+    }
+
+    .check-btn:hover {
+    background-color: #1e664e; /* Slightly darker green */
+    transform: scale(1.05); /* Slightly increase size on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Soft shadow for a floating effect */
+}
+
+        .check-btn.completed {
+            background-color: #aaa;
+            cursor: default;
+        }
+
+    .progress-tracker {
+        font-size: 1.2em;
+        margin-top: 10px;
+        color: #333;
+    }
+
+
+
+  /* Start Button */
+.start-btn {
+    background-color: #23795f;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease; /* Smooth transition for all properties */
+    margin-right: 250px;
+    margin-top: -50px;
+}
+
+/* Hover Effect for Start Button */
+.start-btn:hover {
+    background-color: #1e664e; /* Slightly darker green */
+    transform: scale(1.05); /* Slightly increase size on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Soft shadow for a floating effect */
+}
+
+
+    .timer-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 15px;
+    }
+
+    .timer-display {
+        display: flex;
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-right: 20px;
+        position: absolute;
+        margin-top: -50px;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.0/dist/confetti.browser.min.js"></script>
+
+<script>
+    let timers = {};  // Object to store interval IDs for each exercise
+
+    function startTimer(exercise) {
+        let timerDisplay = document.getElementById('timer-' + exercise);
+        let startButton = document.querySelector('.start-btn[data-exercise="' + exercise + '"]');
+        let checkButton = document.querySelector('.check-btn[data-exercise="' + exercise + '"]');
+        let timeElapsed = 0; // Start from 0 for counting up
+
+        // Disable the Check button initially
+        checkButton.disabled = false;
+
+        // Start a new timer for this exercise
+        timers[exercise] = setInterval(() => {
+            let minutes = Math.floor(timeElapsed / 60);
+            let seconds = timeElapsed % 60;
+            timerDisplay.innerText = `${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+            timeElapsed++; // Increment the time by 1 second
+
+            // Optional: Stop the timer after a certain condition (e.g., after 60 minutes)
+            if (timeElapsed >= 3600) {  // Stop after 60 minutes (3600 seconds)
+                clearInterval(timers[exercise]);
+                alert('Timer reached 1 hour!');
+                startButton.disabled = false; // Re-enable start button
+                checkButton.disabled = false; // Enable the Check button after time is up
+            }
+        }, 1000);
+
+        startButton.disabled = true; // Disable the start button while timer is running
+        checkButton.disabled = false; // Enable the Check button after timer starts
+    }
+
+    function markComplete(event, exercise) {
+        const checkButton = event.target;
+        checkButton.classList.add('completed');
+        checkButton.innerText = 'Completed';
+
+        // Stop the timer for this exercise when marked as complete
+        clearInterval(timers[exercise]);
+
+        // Timer display for time taken
+        const timerDisplay = document.getElementById('timer-' + exercise).innerText;
+
+        // Save completion and timer data via AJAX
+        fetch("{% url 'save_exercise' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({
+                exercise: exercise,
+                time_taken: timerDisplay,
+                score: 1, // Assuming each completion gives a score of 1
+            })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to save data');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Exercise saved:", data);
+                updateProgressTracker();
+                showMotivationalMessage();  // Show the motivational message after completion
+            })
+            .catch(error => {
+                console.error("Error saving exercise:", error);
+            });
+    }
+
+    function showMotivationalMessage() {
+        const messages = [
+            "Great job! Keep pushing yourself!",
+            "You're doing amazing, keep it up!",
+            "Fantastic! Stay strong and keep going!",
+            "Well done! You're closer to your goal!",
+            "Keep it up, you're doing great!"
+        ];
+
+        // Select a random message from the list
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+
+        // Display the message
+        const messageContainer = document.createElement('div');
+        messageContainer.classList.add('motivational-message');
+        messageContainer.innerText = randomMessage;
+
+        // Append the message to the page (e.g., at the top of the exercises section)
+        document.body.appendChild(messageContainer);
+
+        // Remove the message after 3 seconds
+        setTimeout(() => {
+            messageContainer.remove();
+        }, 3000);
+    }
+
+    function triggerConfetti() {
+        // Create the confetti animation
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { x: 0.5, y: 0.5 }, // Centered origin
+            colors: ['#ff0', '#ff0', '#0f0', '#00f', '#f0f'],
+            shapes: ['circle', 'square']
+        });
+    }
+
+    function updateProgressTracker() {
+        // Update the progress tracker (you can update this dynamically)
+        let progressTracker = document.getElementById('progress-tracker');
+        progressTracker.innerHTML = '';  // Update with actual progress count
+    }
+
+
+    function filterExercises() {
+        const searchInput = document.getElementById('search').value.toLowerCase();
+        const exercises = document.querySelectorAll('.exercise-item');
+
+        exercises.forEach(exercise => {
+            const title = exercise.querySelector('h2').innerText.toLowerCase();
+            if (title.includes(searchInput)) {
+                exercise.style.display = 'block'; // Show the exercise
+            } else {
+                exercise.style.display = 'none'; // Hide the exercise
+            }
+        });
+    }
+</script>
+
+
+
+
+{% endblock %}

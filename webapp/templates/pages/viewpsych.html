@@ -1,0 +1,106 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<br />
+<h2>Psychologist Approval Requests</h2>
+<br />
+
+
+<form id="profiles" method="GET" action="" class="search-form" onsubmit="return false;">
+    <input type="text" id="search" name="q" onkeyup="filterSearch()" placeholder="Search psychologist..." value="{{ query }}" class="search-input">
+    <button type="submit" class="search-button">Search</button>
+</form>
+
+<table id="psychologist-table" class="psychologist-table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>License Number</th>
+            <th>Qualification</th>
+            <th>Years of Experience</th>
+            <th>Area of Experience</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for prof in prof %}
+        <tr>
+            <td>{{ prof.user.username }}</td>
+            <td>{{ prof.license_number }}</td>
+            <td>{{ prof.qualification }}</td>
+            <td>{{ prof.years_of_experience }}</td>
+            <td>{{ prof.area_of_expertise }}</td>
+            <td>
+                {% if prof.is_approved %}
+                <span>Approved</span>
+                {% else %}
+                <span>Under Review</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if not prof.is_approved %}
+                <form method="POST" action="{% url 'approve_psychologist' prof.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Approve</button>
+                </form>
+                <form method="POST" action="{% url 'reject_psychologist' prof.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Reject</button>
+                </form>
+                {% else %}
+                <span>Approved</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7">No psychologist requests available.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<style>
+
+    h2 {
+        text-align: center;
+    }
+
+    .buttonsend {
+        display: inline-block;
+        padding: 12px 20px;
+        background-color: #38b993; /* Base color */
+        color: #ffffff; /* Text color */
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        text-decoration: none;
+        border: none;
+        border-radius: 6px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    }
+
+        .buttonsend:hover {
+            background-color: #267c62; /* Darker green */
+            transform: scale(1.05); /* Slightly enlarges */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 0 8px #38b993; /* Adds a glow effect */
+        }
+
+
+    #profiles {
+        background-color: white;
+        padding: 15px;
+        border: 2px solid #38b993;
+        border-radius: 8px;
+        width: 100%;
+        max-width: 600px;
+        margin: 20px auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="{% static '/css/assessment.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+
+<h2>  Generalised Anxiety Disorder Assessment (GAD-7)</h2>
+<div class="gad7">
+
+    <br>
+    <br>
+    <form id="gad7-form" method="post" action="{% url 'gad7' %}">
+        {% csrf_token %}
+        <ol>
+            {% for question in questions %}
+            <li>
+                <label>{{ question.text }}</label>
+                <select name="questions[]" class="gad7-question" onchange="calculateScore()">
+                    <option value="0">Not at all</option>
+                    <option value="1">Several days</option>
+                    <option value="2">More than half the days</option>
+                    <option value="3">Nearly every day</option>
+                </select>
+            </li>
+            {% endfor %}
+        </ol>
+        <div class="total">
+            <br>
+            <strong>Total Score: <span id="total-score">0</span></strong>
+            <br>
+            <strong> Interpretation:  <span id="interpretation">  </span> </strong>
+            <br>
+        </div>
+        <br>
+        <button type="submit" onclick="submitGad7(event)">Submit</button>
+    </form>
+
+
+
+    <br>
+    <div class="interpretation">
+        <h3> Interpretation</h3>
+
+        <ul>
+            <li>Score 0-4: Minimal Anxiety</li>
+            <li>Score 5-9: Mild Anxiety</li>
+            <li>Score 10-14: Moderate Anxiety</li>
+            <li>Score greater than 15: Severe Anxiety</li>
+            <li>Scores of 5, 10, and 15 represent cut-points for mild, moderate, and severe anxiety, respectively.</li>
+            <li>Further evaluation is recommended when the score is 10 or greater.</li>
+            <li>Normative data for the GAD-7 were generated for boys and girls, and different age levels.</li>
+            <br>
+            <li> <font color="red"> <b>Please note that while great care has been taken with the development of this self-test, it is not intended to be a substitute for professional clinical advice.  This is used as a screening tool only. The result is indicative. If you have scored above the threshold on this scale, consult our available<a href="http://127.0.0.1:8000/prof/"> registered psychologist.  </a> </li>
+        </ul>
+    </div>
+
+    <div class="interpretation">
+        <h3 onclick="toggleSection('overview')">Overview</h3>
+        <div id="overview" class="collapsible">
+            <ul>
+                <li>The Generalised Anxiety Disorder Assessment (GAD-7) is a seven-item instrument that is used to measure or assess the severity of generalised anxiety disorder (GAD).</li>
+                <li>Each item asks the individual to rate the severity of his or her symptoms over the past two weeks.</li>
+                <li>Response options include “not at all,” “several days,” “more than half the days,” and “nearly every day.”</li>
+            </ul>
+        </div>
+
+        <h3 onclick="toggleSection('terms')">Terms of Use</h3>
+        <div id="terms" class="collapsible">
+            <ul>
+                <li>The GAD-7 is free to use. For more information, see Pfizer's terms of use: <a href="https://www.phqscreeners.com/terms">https://www.phqscreeners.com/terms</a></li>
+            </ul>
+        </div>
+
+
+        <h3 onclick="toggleSection('administration')">Administration</h3>
+        <div id="administration" class="collapsible">
+            <ul>
+                <li>The GAD-7 is a self-administered patient questionnaire and takes about 1-2 minutes to complete.</li>
+            </ul>
+        </div>
+
+
+        <h3 onclick="toggleSection('scoring')">Scoring</h3>
+        <div id="scoring" class="collapsible">
+            <ul>
+                <li>The GAD-7 score is calculated by assigning scores of 0, 1, 2, and 3, to the response categories of “not at all,” “several days,” “more than half the days,” and “nearly every day,” respectively.</li>
+                <li>The total score for the seven items ranges from 0 to 21.</li>
+            </ul>
+        </div>
+
+
+
+        <h3 onclick="toggleSection('psychometric')">Psychometric Properties</h3>
+        <div id="psychometric" class="collapsible">
+            <table class="psychometric-table">
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Definition</th>
+                        <th>GAD-7</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Internal consistency</td>
+                        <td>Whether several items that propose to measure the same general construct produce similar scores.</td>
+                        <td>Research indicates the GAD-7 shows excellent internal consistency (Spitzer, Kroenke, Williams, & Löwe, 2006)</td>
+                    </tr>
+                    <tr>
+                        <td>Test-retest reliability</td>
+                        <td>Degree to which the same respondents have the same score after a period when a trait should not have changed.</td>
+                        <td>The GAD-7 shows good test-retest reliability (Spitzer et al., 2006)</td>
+                    </tr>
+                    <tr>
+                        <td>Criterion validity</td>
+                        <td>Extent to which a measure is related to an outcome.</td>
+                        <td>The GAD-7 is a useful tool with strong criterion validity for identifying possible cases of GAD (Spitzer et al., 2006)</td>
+                    </tr>
+                    <tr>
+                        <td>Construct validity</td>
+                        <td>Degree to which a test measures what it claims, or purports, to be measuring.</td>
+                        <td>Löwe et al. (2008) substantiated the 1-dimensional structure of the GAD-7 and its factorial invariance for gender and age.</td>
+                    </tr>
+                    <tr>
+                        <td>Concurrent validity</td>
+                        <td>If a measure correlates well with a measure that has previously been validated.</td>
+                        <td>The GAD-7 yielded significant intercorrelations with the PHQ-2 and the Rosenberg Self-Esteem Scale (Löwe et al., 2008)</td>
+                    </tr>
+                    <tr>
+                        <td>Convergent validity</td>
+                        <td>Degree to which two measures of constructs that theoretically should be related, are in fact related.</td>
+                        <td>Higher GAD-7 scores correlate with disability and functional impairment (Spitzer et al., 2006; Ruiz et al., 2011)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+    {% endblock %}

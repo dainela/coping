@@ -1,0 +1,116 @@
+.mood-calendar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 80%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    background-color: #ffffff;
+    border: 2px solid #38b993; /* Added border */
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 2rem;
+}
+
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    width: 100%;
+    border: 2px solid #38b993; /* Added border */
+}
+
+.day {
+    width: 100%;
+    padding: 10px;
+    background-color: #38b993;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #2a8c73; /* Added border with a darker shade */
+}
+
+    .day:hover {
+        background-color: #2a8c73;
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .day.selected {
+        background-color: #2a8c73;
+        color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+.mood {
+    font-size: 1.2rem;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
+
+.mood-selector {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid #38b993; /* Added border */
+}
+
+#selected-date {
+    margin-bottom: 10px;
+    padding: 5px;
+    width: 150px;
+    text-align: center;
+    border: 2px solid #38b993; /* Added border */
+    border-radius: 4px;
+}
+
+select, button {
+    padding: 8px 12px;
+    margin: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    transition: background-color 0.3s ease;
+    border: 2px solid #38b993; /* Added border */
+}
+
+    button:hover, select:hover {
+        background-color: #38b993;
+        color: white;
+        border-color: #38b993;
+    }
+
+/* Tooltip for displaying note on hover over a date */
+.day .note-tooltip {
+    visibility: hidden;
+    width: 200px;
+    background-color: #2a8c73;
+    color: white;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+}
+
+.day:hover .note-tooltip {
+    visibility: visible;
+    opacity: 1;
+}

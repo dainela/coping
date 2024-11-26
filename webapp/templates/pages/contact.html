@@ -1,0 +1,12 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<form class="feedbacks" action="" method="POST">
+    <h1> Give us Feedback! </h1> <br />
+    {% csrf_token %}
+    {{form}}
+    <input type="submit" name="submit" />
+</form>
+
+{% endblock  %}

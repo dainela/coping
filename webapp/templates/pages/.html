@@ -1,0 +1,36 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+<h1>Patient Responses</h1>
+
+<!-- Search Form -->
+<form method="GET" action="{% url 'viewpatient' %}" class="search-form" id="search-form">
+    <input type="text" name="search" id="search-input" placeholder="Search by name or email" value="{{ search_query }}">
+    <button type="submit" style="display:none;">Search</button> <!-- Hidden button for the form submission -->
+</form>
+
+<!-- Dynamic Patient List -->
+<div id="patient-list">
+    {% include 'pages/viewpatient.html' %}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Handle the search input change event
+        $('#search-input').on('input', function () {
+            var searchQuery = $(this).val();  // Get the search query
+            $.ajax({
+                url: "{% url 'viewpatient' %}",
+                data: {
+                    'search': searchQuery
+                },
+                success: function (response) {
+                    // Update the patient list with the new HTML
+                    $('#patient-list').html(response.html);
+                }
+            });
+        });
+    });</script>
+
+{% endblock %}

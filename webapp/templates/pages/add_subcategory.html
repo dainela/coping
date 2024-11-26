@@ -1,0 +1,82 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+<h1>Add Sub-Coping</h1>
+<form class= "addsubcategory" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ subcategory_form.as_p }}  
+    <div class="color-legend">
+        <p style="background-color: #ADD8E6; color: #000; padding: 5px; margin: 5px;">Minimal</p>
+        <p style="background-color: #FFFFE0; color: #000; padding: 5px; margin: 5px;">Mild</p>
+        <p style="background-color: #D3A6FF; color: #000; padding: 5px; margin: 5px;">Moderate</p>
+        <p style="background-color: #FFB6C1; color: #000; padding: 5px; margin: 5px;">Severe</p>
+    </div>
+    <button class="subbtn" type="submit">Add Subcategory</button>
+</form>
+
+<a href="{% url 'add_category' %}" id="backbtn" class="button">Back to Categories</a>
+
+
+
+<style>
+
+
+    .addsubcategory{
+        margin-left: 100px;
+        margin-right: 100px;
+
+}
+
+h1{
+    text-align: center;
+}
+    .button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3ea086; /* Green background */
+    color: white; /* White text */
+    text-decoration: none;
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s ease; /* Smooth transition */
+    margin-left: 1350px;
+    margin-top: 10px;
+    }
+
+.button:hover {
+    background-color: #2c7763; /* Darker green on hover */
+}
+
+  /* General button styling */
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #38b993;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 1350px;
+    margin-bottom: 100px;
+}
+
+.button:hover {
+    background-color: #14362b;
+}
+
+/* Specific styling for backbtn */
+#backbtn {
+    background-color: #38b993; /* Green background for this button */
+}
+
+#backbtn:hover {
+    background-color: #13392d; /* Darker green on hover */
+}
+
+
+    </style> 
+
+{% endblock%}

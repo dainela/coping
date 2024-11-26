@@ -1,0 +1,125 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<h2>Search Profiles</h2>
+<form id="profiles" method="GET" action="" class="search-form">
+    <input type="text" id="search" name="q" onkeyup="filterSearch()" placeholder="Search profiles..." value="{{ query }}" class="search-input">
+    <button type="submit" class="search-button">Search</button>
+</form>
+
+<table id="profiletable">
+    <thead>
+        <tr>
+
+         {% if user.is_superuser %}   <th onclick="sortTable(0)">ID</th> {% endif %}
+            <th onclick="sortTable(1)">Profile Picture</th>
+            <th onclick="sortTable(2)">Username</th>
+            <th onclick="sortTable(3)">First Name</th>
+            <th onclick="sortTable(4)">Last Name</th>
+            <th onclick="sortTable(5)">Email</th>
+            <th onclick="sortTable(6)">Severity</th>  
+            <th>Action</th>  <!-- Action Column -->
+        </tr>
+    </thead>
+    <tbody>
+        {% for u in users %}
+        {% if u != user %}  {# Exclude the logged-in user from the table #}
+        <tr>
+            {% if user.is_superuser %}
+            <td>{{ u.id }}</td>{% endif %}
+            <td>
+                {% if u.profile.image %}
+                <img src="{{ u.profile.image.url }}" alt="Profile Picture" style="width:30px; height:30px;" />
+                {% else %}
+                <p>No Image</p>
+                {% endif %}
+            </td>
+            <td>{{ u.username }}</td>
+            <td>{{ u.first_name }}</td>
+            <td>{{ u.last_name }}</td>
+            <td>{{ u.email }}</td>
+            <td>
+                {% for response in latest_responses %}
+                {% if response.user == u %}
+                {{ response.severity }}
+                {% endif %}
+                {% empty %}
+                No Data
+                {% endfor %}
+            </td>
+            <td>
+                {% if user.is_superuser %}
+                <!-- Only show Send Message button for admins -->
+                <a href="{% url 'admin_message_user' user_id=u.id %}" class="buttonsend">Send Message</a>
+
+                {% endif %}
+            </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    function filterSearch() {
+        const searchInput = document.getElementById('search').value.toLowerCase();  // Get the search term
+        const tableRows = document.querySelectorAll('#profiletable tbody tr');   // Get all table rows
+
+        tableRows.forEach(row => {
+            let rowData = '';
+
+            // Loop through all cells in the row and gather text content
+            row.querySelectorAll('td').forEach(cell => {
+                rowData += cell.textContent.toLowerCase() + ' ';  // Concatenate text of each cell (including spaces)
+            });
+
+            // If the row contains the search term, display it; otherwise, hide it
+            if (rowData.includes(searchInput)) {
+                row.style.display = '';  // Show row
+            } else {
+                row.style.display = 'none';  // Hide row
+            }
+        });
+    }
+</script>
+<style>
+
+h2{
+    text-align: center;
+}
+.buttonsend {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #38b993; /* Base color */
+    color: #ffffff; /* Text color */
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.buttonsend:hover {
+    background-color: #267c62; /* Darker green */
+    transform: scale(1.05); /* Slightly enlarges */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 0 8px #38b993; /* Adds a glow effect */
+}
+
+    
+    #profiles{
+        background-color: white;
+    padding: 15px;
+    border: 2px solid #38b993;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+{% endblock  %}

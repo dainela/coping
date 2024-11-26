@@ -1,0 +1,566 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+<a href="{% url 'category_list' %}" class="button">Back to Categories</a>
+<style>
+    
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3ea086; /* Green background */
+        color: white; /* White text */
+        text-decoration: none;
+        border-radius: 5px; /* Rounded corners */
+        transition: background-color 0.3s ease; /* Smooth transition */
+        margin-left: 1350px;
+    }
+
+        .button:hover {
+            background-color: #2c7763; /* Darker green on hover */
+        }
+        </style>
+<div class="likod">
+
+</div>
+<div class="exercise-guide">
+    <h1>Yoga Exercise Guide</h1>
+    <input type="text" id="search" placeholder="Search for exercises..." onkeyup="filterExercises()">
+    <div id="progress-tracker" class="progress-tracker"> <center> Completed: 0/10 </center> </div>
+
+    <!-- Yoga Exercise List -->
+    <div class="exercise-list">
+
+        <div class="exercise-item">
+            <img alt="Hero Pose" class="exercise-image" src="{% static 'media/heropose.png' %}">
+            <h2>Hero Pose</h2>
+            <p>This seated posture can help you find your center. Focusing on your breath may help you find ease in the stillness of this pose.</p>
+            <br>
+            <p>To do this:</p>
+            <p>1. Get into a kneeling position. Your knees should be together, and your feet should be slightly wider than your hips.</p>
+            <p>2. Keep the tops of your feet flat on the floor.</p>
+            <p>3. Sit back so that your bottom reaches the floor in between your feet. If your bottom does not reach the floor, use a block or a book.</p>
+            <p>4. Place your hands on your thighs.</p>
+            <p>5. Sit up straight to open your chest and lengthen your spine.</p>
+            <p>6. Sit up straight to open your chest and lengthen your spine.</p>
+
+            <button class="check-btn" data-exercise="Hero Pose" onclick="markYogaComplete(event, 'Hero Pose')" disabled>Check</button>
+            <!-- Timer Section -->
+            <div class="timer-section">
+                <button class="start-btn" data-exercise="Hero Pose" onclick="startYogaTimer('Hero Pose')">Start Timer</button>
+                <span id="timer-Hero Pose" class="timer-display">00:00</span>
+            </div>
+        </div>
+
+        <div class="exercise-item">
+            <img alt="Tree Pose" class="exercise-image" src="{% static 'media/tree_pose.png' %}">
+            <h2>Tree Pose</h2>
+            <p>This classic standing pose may help you focus inward, quieting racing thoughts.</p>
+            <br>
+            <p>To do this:</p>
+            <p>1. From standing, bear your weight with your right foot and slowly lift your left foot off of the ground.</p>
+            <p>2. Slowly turn the sole of your left foot toward the inside of your left leg.</p>
+            <p>3. Place it on the outside of your left ankle, calf, or thigh.</p>
+            <p>4. Avoid pressing your foot into your knee.</p>
+            <p>5. Bring your hands into any comfortable position. This could be in prayer position in front of your heart or hanging alongside your sides.</p>
+            <p>6. Hold this pose for up to 2 minutes.</p>
+            <p>7. Repeat on the opposite side.</p>
+
+            <button class="check-btn" data-exercise="Tree Pose" onclick="markYogaComplete(event, 'Tree Pose')" disabled>Check</button>
+            <!-- Timer Section -->
+            <div class="timer-section">
+                <button class="start-btn" data-exercise="Tree Pose" onclick="startYogaTimer('Tree Pose')">Start Timer</button>
+                <span id="timer-Tree Pose" class="timer-display">00:00</span>
+            </div>
+        </div>
+
+        <div class="exercise-item">
+            <img alt="Triangle Pose" class="exercise-image" src="{% static 'media/trianglepose.png' %}">
+            <h2>Triangle Pose</h2>
+            <p>This pose stretches the chest and strengthens the spine.</p>
+            <br>
+            <p>To do this:</p>
+            <p>1. Come into a standing position with your feet wider than your hips.</p>
+            <p>2. Face your left toes forward and your right toes in at a slight angle.</p>
+            <p>3. Lift your arms to extend out from your shoulders. Your palms should face down.</p>
+            <p>4. Extend your torso forward as you reach forward with your left hand.</p>
+            <p>5. Hinge at your hip joint to bring your right hip back. Take your left hand to your leg, the floor, or a block.</p>
+            <p>6. Extend your right arm up toward the ceiling.</p>
+            <p>7. Gaze in any comfortable direction.</p>
+            <p>8. Hold this pose for up to 1 minute.</p>
+            <p>9. Then do the opposite side.</p>
+
+            <button class="check-btn" data-exercise="Triangle Pose" onclick="markYogaComplete(event, 'Triangle Pose')" disabled>Check</button>
+            <!-- Timer Section -->
+            <div class="timer-section">
+                <button class="start-btn" data-exercise="Triangle Pose" onclick="startYogaTimer('Triangle Pose')">Start Timer</button>
+                <span id="timer-Triangle Pose" class="timer-display">00:00</span>
+            </div>
+        </div>
+
+        <div class="exercise-item">
+            <img alt="childs_pose" class="exercise-image" src="{% static 'media/standingforward.png' %}">
+            <h2>Standing Forward Bend</h2>
+            <p>A gentle pose to relax and stretch your back.</p>
+            <br>
+            <p>To do this:</p>
+            <p>1. Stand with your feet about hip-width apart and your hands on your hips.</p>
+            <p>2. Exhale as you hinge at the hips to fold forward, keeping a slight bend in your knees.</p>
+            <p>3. Drop your hands to the floor or rest them on a block.</p>
+            <p>4. Tuck your chin into your chest.</p>
+            <p>5. Release tension in your lower back and hips. Your head and neck should hang heavy toward the floor.</p>
+            <p>6. Hold this pose for up to one minute.</p>
+
+            <button class="check-btn" data-exercise="Standing Forward Bend" onclick="markYogaComplete(event, 'Standing Forward Bend')" disabled>Check</button>
+            <!-- Timer Section -->
+            <div class="timer-section">
+                <button class="start-btn" data-exercise="Standing Forward Bend" onclick="startYogaTimer('Standing Forward Bend')">Start Timer</button>
+                <span id="timer-Standing Forward Bend" class="timer-display">00:00</span>
+            </div>
+        </div>
+
+        <div class="exercise-item">
+            <img alt="cat_cow" class="exercise-image" src="{% static 'media/fishpose.png' %}">
+            <h2>Fish Pose</h2>
+            <p>A flow between two poses that stretches and strengthens your spine.</p>
+            <br>
+            <p>To do this:</p>
+            <p>1. Sit with your legs stretched out in front of you.</p>
+            <p>2. Place your hands underneath your buttocks with your palms facing down.</p>
+            <p>3. Squeeze your elbows together and expand your chest.</p>
+            <p>4. Then lean back onto your forearms and elbows, pressing into your arms to stay lifted in your chest.</p>
+            <p>5. If it’s comfortable, you may let your head hang back toward the floor or rest it on a block or cushion.</p>
+            <p>6. Hold this pose for up to one minute.</p>
+
+            <button class="check-btn" data-exercise="Fish Pose" onclick="markYogaComplete(event, 'Fish Pose')" disabled>Check</button>
+            <!-- Timer Section -->
+            <div class="timer-section">
+                <button class="start-btn" data-exercise="Fish Pose" onclick="startYogaTimer('Fish Pose')">Start Timer</button>
+                <span id="timer-Fish Pose" class="timer-display">00:00</span>
+            </div>
+        </div>
+
+        <div class="exercise-item">
+            <img alt="plank_pose" class="exercise-image" src="{% static 'media/extendedpuppy.png' %}">
+            <h2>Extended Puppy Pose</h2>
+            <p>A core-strengthening pose that engages the entire body.</p>
+            <br>
+            <p>To do this:</p>
+            <p>1. Come into a tabletop position.</p>
+            <p>2. Extend your hands forward a few inches and sink your buttocks down toward your heels.</p>
+            <p>3. Press into your hands and engage your arms muscles, keeping your elbows lifted.</p>
+            <p>4. Gently rest your forehead on the floor.</p>
+            <p>5. Allow your chest to open and soften during this pose.</p>
+            <p>6. Hold this pose for up to two minutes.</p>
+
+            <button class="check-btn" data-exercise="Extended Puppy Pose" onclick="markYogaComplete(event, 'Extended Puppy Pose')" disabled>Check</button>
+            <!-- Timer Section -->
+            <div class="timer-section">
+                <button class="start-btn" data-exercise="Extended Puppy Pose" onclick="startYogaTimer('Extended Puppy Pose')">Start Timer</button>
+                <span id="timer-Extended Puppy Pose" class="timer-display">00:00</span>
+            </div>
+        </div>
+
+        <div class="exercise-item">
+            <img alt="bridge_pose" class="exercise-image" src="{% static 'media/childpose.png' %}">
+            <h2>Child's Pose</h2>
+            <p>A gentle backbend that strengthens the lower body and stretches the chest.</p>
+            <br>
+            <p>To do this:</p>
+            <p>1. From a kneeling position, sink back onto your heels.</p>
+            <p>2. Fold forward, walking your hands out in front of you</p>
+            <p>3. Allow your torso to fall heavy into your thighs, and rest your forehead on the floor.</p>
+            <p>4. Keep your arms extended forward or rest them alongside your body.</p>
+            <p>5. Hold this pose for up to 5 minutes.</p>
+
+
+            <button class="check-btn" data-exercise="Childs Pose" onclick="markYogaComplete(event, 'Childs Pose')" disabled>Check</button>
+            <!-- Timer Section -->
+            <div class="timer-section">
+                <button class="start-btn" data-exercise="Childs Pose" onclick="startYogaTimer('Childs Pose')">Start Timer</button>
+                <span id="timer-Childs Pose" class="timer-display">00:00</span>
+            </div>
+        </div>
+
+        <div class="exercise-item">
+            <img alt="warrior_pose" class="exercise-image" src="{% static 'media/headtoknee.png' %}">
+            <h2>Head-to-Knee Forward Bend</h2>
+            <p>A strong standing pose that builds strength and stability.</p>
+            <br>
+            <p>To do this:</p>
+            <p>1. Sit on the edge of a cushion or folded blanket with your left leg extended.</p>
+            <p>2. Press the sole of your right foot into your left thigh.</p>
+            <p>3. You can place a cushion or block under either knee for support.</p>
+            <p>4. Inhale as you extend your arms overhead.</p>
+            <p>5. Exhale as you hinge at the hips, lengthening your spine to fold forward.</p>
+            <p>6. Rest your hands anywhere on your body or on the floor.</p>
+            <p>7. Hold this pose for up to 5 minutes.</p>
+            <p>8. Then repeat on the opposite side.</p>
+
+            <button class="check-btn" data-exercise="Head-to-Knee Forward Bend" onclick="markYogaComplete(event, 'Head-to-Knee Forward Bend')" disabled>Check</button>
+            <!-- Timer Section -->
+            <div class="timer-section">
+                <button class="start-btn" data-exercise="Head-to-Knee Forward Bend" onclick="startYogaTimer('Head-to-Knee Forward Bend')">Start Timer</button>
+                <span id="timer-Head-to-Knee Forward Bend" class="timer-display">00:00</span>
+            </div>
+        </div>
+
+        <div class="exercise-item">
+            <img alt="seated_forward_fold" class="exercise-image" src="{% static 'media/seated_forward_bend.png' %}">
+            <h2>Seated Forward Bend</h2>
+            <p>A calming forward bend that stretches the hamstrings and lower back.</p>
+            <br>
+            <p>To do this:</p>
+            <p>1. Get into a kneeling position. Your knees should be together, and your feet should be slightly wider than your hips.</p>
+            <p>2. Keep the tops of your feet flat on the floor.</p>
+            <p>3. Sit back so that your bottom reaches the floor in between your feet. If your bottom does not reach the floor, use a block or a book.</p>
+            <p>4. Place your hands on your thighs.</p>
+            <p>5. Sit up straight to open your chest and lengthen your spine.</p>
+            <p>6. Sit up straight to open your chest and lengthen your spine.</p>
+
+            <button class="check-btn" data-exercise="Seated Forward Bend" onclick="markYogaComplete(event, 'Seated Forward Bend')" disabled>Check</button>
+            <!-- Timer Section -->
+            <div class="timer-section">
+                <button class="start-btn" data-exercise="Seated Forward Bend" onclick="startYogaTimer('Seated Forward Bend')">Start Timer</button>
+                <span id="timer-Seated Forward Bend" class="timer-display">00:00</span>
+            </div>
+        </div>
+
+        <div class="exercise-item">
+            <img alt="corpse_pose" class="exercise-image" src="{% static 'media/legsupto.png' %}">
+            <h2>Legs-Up-The-Wall Pose</h2>
+            <p>A final resting pose to relax the body and mind after practice.</p>
+            <br>
+            <p>To do this:</p>
+            <p>1. Sit on the edge of a folded blanket or cushion with your legs straight out in front of you.</p>
+            <p>2. You may keep a slight bend in your knees.</p>
+            <p>3. Inhale to lift up your arms.</p>
+            <p>4. Slowly hinge at your hips to extend forward, resting your hands anywhere on your body or the floor.</p>
+            <p>5. Remain in this pose for up to 5 minutes.</p>
+
+
+            <button class="check-btn" data-exercise="Legs-Up-The-Wall Pose" onclick="markYogaComplete(event, 'Legs-Up-The-Wall Pose')" disabled>Check</button>
+            <!-- Timer Section -->
+            <div class="timer-section">
+                <button class="start-btn" data-exercise="Legs-Up-The-Wall Pose" onclick="startYogaTimer('Legs-Up-The-Wall Pose')">Start Timer</button>
+                <span id="timer-Legs-Up-The-Wall Pose" class="timer-display">00:00</span>
+            </div>
+        </div>
+
+
+
+        <!-- Repeat for other yoga poses... -->
+
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+<script>
+    let timers = {};  // Object to store interval IDs for each yoga exercise
+
+    function startYogaTimer(exercise) {
+        let timerDisplay = document.getElementById('timer-' + exercise);
+        let startButton = document.querySelector('.start-btn[data-exercise="' + exercise + '"]');
+        let checkButton = document.querySelector('.check-btn[data-exercise="' + exercise + '"]');
+        let timeElapsed = 0; // Start at 0 seconds
+
+        // Disable the Check button initially
+        checkButton.disabled = false;
+
+        // Start a new timer for this exercise
+        timers[exercise] = setInterval(() => {
+            let minutes = Math.floor(timeElapsed / 60);
+            let seconds = timeElapsed % 60;
+            timerDisplay.innerText = `${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+            timeElapsed++; // Increment the time by 1 second
+
+            // You can stop the timer after a certain condition, if needed
+            // Example: If you want to stop the timer after 60 minutes
+            if (timeElapsed >= 3600) {  // Stop after 60 minutes (3600 seconds)
+                clearInterval(timers[exercise]);
+                alert('Timer reached 1 hour!');
+                startButton.disabled = false; // Re-enable start button
+                checkButton.disabled = false; // Enable the Check button after time is up
+            }
+        }, 1000);
+
+        startButton.disabled = true; // Disable the start button while the timer is running
+        checkButton.disabled = false; // Enable the Check button after timer starts
+    }
+
+    function filterExercises() {
+        const searchInput = document.getElementById('search').value.toLowerCase();
+        const exercises = document.querySelectorAll('.exercise-item');
+
+        exercises.forEach(exercise => {
+            const title = exercise.querySelector('h2').innerText.toLowerCase();
+            if (title.includes(searchInput)) {
+                exercise.style.display = 'block'; // Show the exercise
+            } else {
+                exercise.style.display = 'none'; // Hide the exercise
+            }
+        });
+    }
+
+    function markYogaComplete(event, exercise) {
+        const checkButton = event.target;
+        checkButton.classList.add('completed');
+        checkButton.innerText = 'Completed';
+
+        // Stop the timer for this exercise when marked as complete
+        clearInterval(timers[exercise]);
+
+        // Timer display for time taken
+        const timerDisplay = document.getElementById('timer-' + exercise).innerText;
+
+        // Save completion and timer data via AJAX
+        fetch("{% url 'save_yoga' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({
+                exercise: exercise,
+                time_taken: timerDisplay,
+                score: 1, // Assuming each completion gives a score of 1
+            })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to save data');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Yoga pose saved:", data);
+                updateYogaProgress();
+                showMotivationalMessage();  // Show the motivational message after completion
+            })
+            .catch(error => {
+                console.error("Error saving yoga pose:", error);
+            });
+    }
+
+    function showMotivationalMessage() {
+        const messages = [
+            "Great job! Keep going!",
+            "You're doing amazing, stay strong!",
+            "Well done! You're one step closer!",
+            "Keep it up! You're crushing it!",
+            "Fantastic! You're making progress!"
+        ];
+
+        // Select a random message from the list
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+
+        // Display the message
+        const messageContainer = document.createElement('div');
+        messageContainer.classList.add('motivational-message');
+        messageContainer.innerText = randomMessage;
+
+        // Append the message to the page (e.g., at the top of the exercises section)
+        document.body.appendChild(messageContainer);
+
+        // Remove the message after 3 seconds
+        setTimeout(() => {
+            messageContainer.remove();
+        }, 3000);
+    }
+
+    function updateYogaProgress() {
+        const completedYogaPoses = document.querySelectorAll('.check-btn.completed').length;
+        const totalYogaPoses = document.querySelectorAll('.exercise-item').length;
+        document.getElementById('progress-tracker').innerHTML = `<center>Completed: ${completedYogaPoses}/${totalYogaPoses}</center>`;
+    }
+</script>
+
+
+
+
+<style>
+    .motivational-message {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #4caf50;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+        opacity: 1;
+        transition: opacity 0.5s ease-out;
+        z-index: 1000;
+    }
+    .exercise-guide h1 {
+        margin-top: -90px;
+    }
+
+    .exercise-guide {
+        background-color: transparent; /* Fully transparent */
+        color: #fff;
+        margin-top: 175px;
+        width: 50%; /* Palitan ito depende sa gusto mong size */
+        padding: 10px; /* Para sa content spacing */
+        border-radius: 8px; /* Para sa mas magandang edges (optional) */
+        box-shadow: none; /* Alisin ang shadow kung mayroon */
+        margin: 0 auto; /* Para naka-center */
+        margin-top: 100px;
+    }
+
+    .likod {
+        background-color: #38b993;
+        width: 60%; /* Adjust width as needed */
+        margin: 20px auto; /* Center the container */
+        padding: 90px; /* Add spacing inside the container */
+        border-radius: 10px; /* Optional: rounded corners */
+        color: white; /* Text color for contrast */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
+        text-align: center; /* Optional: center-align text */
+        margin-bottom: -175px;
+    }
+
+
+    .exercise-item:hover {
+        color: #38b993; /* Change text color when hovering over individual exercise items */
+    }
+
+
+    .progress-tracker {
+        color: #38b993;
+    }
+
+    .exercise-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 items per row */
+        gap: 120px; /* Adds gap between items */
+        width: 200%;
+        padding: 20px;
+        box-sizing: border-box;
+        margin-left: -370px;
+    }
+
+    .exercise-item {
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        position: relative;
+        padding: 20px; /* Add padding for better spacing */
+        box-sizing: border-box;
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        background-color: #fff; /* White background for contrast */
+        text-align: center;
+        font-size: 1.2em; /* Larger text */
+        border: 2px solid #38b993;
+        background-color: #38b993;
+    }
+
+        .exercise-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .exercise-item img {
+            border: 2px solid #38b993;
+            width: 100%; /* Make images responsive */
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .exercise-item h2 {
+            font-size: 1.5em; /* Larger heading */
+            margin: 10px 0;
+        }
+
+        .exercise-item p {
+            font-size: 1em;
+            margin: 10px 0;
+        }
+
+        .check-btn {
+        background-color: #23795f;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease; /* Smooth transition for all properties */
+    margin-left: 220px;
+    margin-bottom: -5px;
+    }
+
+    .check-btn:hover {
+    background-color: #1e664e; /* Slightly darker green */
+    transform: scale(1.05); /* Slightly increase size on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Soft shadow for a floating effect */
+}
+
+        .check-btn.completed {
+            background-color: #aaa;
+            cursor: default;
+        }
+
+    .progress-tracker {
+        font-size: 1.2em;
+        margin-top: 10px;
+        color: #333;
+    }
+
+
+
+  /* Start Button */
+.start-btn {
+    background-color: #23795f;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease; /* Smooth transition for all properties */
+    margin-right: 250px;
+    margin-top: -50px;
+}
+
+/* Hover Effect for Start Button */
+.start-btn:hover {
+    background-color: #1e664e; /* Slightly darker green */
+    transform: scale(1.05); /* Slightly increase size on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Soft shadow for a floating effect */
+}
+
+
+    .timer-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 15px;
+    }
+
+    .timer-display {
+        display: flex;
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-right: 20px;
+        position: absolute;
+        margin-top: -50px;
+    }
+
+    .likod {
+        background-color: #38b993;
+        width: 60%; /* Adjust width as needed */
+        margin: 20px auto; /* Center the container */
+        padding: 90px; /* Add spacing inside the container */
+        border-radius: 10px; /* Optional: rounded corners */
+        color: white; /* Text color for contrast */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
+        text-align: center; /* Optional: center-align text */
+        margin-bottom: -175px;
+    }
+</style>
+
+{% endblock %}

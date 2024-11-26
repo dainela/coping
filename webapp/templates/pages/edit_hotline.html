@@ -1,0 +1,141 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<div class="addform">
+    <h2>Edit Hotline: {{ hotline.title }}</h2>
+    <form class="addform1" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="submit-button">Update Hotline</button>
+    </form>
+</div>
+
+<style>
+
+    /* Styles for the button */
+    .submit-button {
+        display: inline-block;
+        width: 100%;
+        padding: 0.8rem;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #fff;
+        background-color: #216e57;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-align: center;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    
+    /* Hover effect */
+    .submit-button:hover {
+        background-color: #257960;
+        transform: scale(1.02); /* Slight zoom effect */
+    }
+    
+    /* Active/pressed effect */
+    .submit-button:active {
+        background-color: #004494;
+        transform: scale(0.98); /* Slight shrink effect */
+    }
+    
+    /* Focus effect for accessibility */
+    .submit-button:focus {
+        outline: 2px dashed #0056b3;
+        outline-offset: 4px;
+    }
+    
+    /* Responsive design (if button width needs to adapt) */
+    @media (max-width: 768px) {
+        .submit-button {
+            font-size: 0.9rem;
+            padding: 0.6rem;
+        }
+    }
+    
+        /* General styles for the form */
+    .addform {
+        max-width: 600px;
+        margin: 2rem auto; /* Center form on the page */
+        padding: 2rem;
+        border: 1px solid #000000;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        background-color: #38b993;
+        font-family: Arial, sans-serif;
+    }
+    
+    .addform1 {
+        max-width: 600px;
+        margin: 2rem auto; /* Center form on the page */
+        padding: 2rem;
+        border-radius: 8px;
+        background-color: #38b993;
+        font-family: Arial, sans-serif;
+    }
+    
+    /* Heading styles */
+    .addform h1 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        color: #fff;
+        text-align: center;
+    }
+    
+    /* Input and label styles */
+    .addform label {
+        font-weight: bold;
+        color: #fff;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .addform input[type="text"],
+    .addform textarea {
+        width: 100%;
+        padding: 0.8rem;
+        margin-bottom: 1.2rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1rem;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease;
+    }
+    
+    .addform input[type="text"]:focus,
+    .addform textarea:focus {
+        border-color: #007BFF;
+        outline: none;
+        box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+    }
+    
+    /* Submit button styles */
+    .addform input[type="submit"] {
+        width: 100%;
+        padding: 0.8rem;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #fff;
+        background-color: #007BFF;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    
+    .addform input[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .addform {
+            padding: 1.5rem;
+        }
+    }
+    
+    </style>
+
+{% endblock %}

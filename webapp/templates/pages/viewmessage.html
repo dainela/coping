@@ -1,0 +1,140 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+
+<div class="chat-container">
+    <div class="chat-header">
+        <h2>Chat with {{ prof.user.first_name }} {{ prof.user.last_name }}</h2>
+        <a href="{% url 'home' %}" class="chat-close">X</a>
+    </div>
+
+    <div class="chat-box" id="chat-box">
+        {% for message in messages %}
+        <div class="chat-message {% if message.sender == user %}chat-message-user{% else %}chat-message-professional{% endif %}">
+            <p>{{ message.message }}</p>
+            <small>{{ message.timestamp }}</small>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="chat-input">
+        <form method="POST">
+            {% csrf_token %}
+            <textarea id="message-input" name="message" class="chat-textarea" placeholder="Write your reply..." required></textarea>
+            <button type="submit" class="chat-send-btn">Send</button>
+        </form>
+    </div>
+</div>
+<style>
+    /* General container styling */
+    .chat-container {
+        width: 60%;
+        margin: 20px auto;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .chat-header {
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .chat-header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+    .chat-close {
+        color: #fff;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .chat-box {
+        max-height: 400px;
+        overflow-y: auto;
+        padding: 15px;
+        background-color: #fff;
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .chat-message {
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 10px;
+        position: relative;
+        max-width: 75%;
+        word-wrap: break-word;
+    }
+
+    .chat-message-user {
+        background-color: #007bff;
+        color: #fff;
+        margin-left: auto;
+        text-align: right;
+    }
+
+    .chat-message-professional {
+        background-color: #f1f1f1;
+        color: #333;
+        text-align: left;
+    }
+
+    .chat-message p {
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .chat-message small {
+        font-size: 10px;
+        color: #666;
+    }
+
+    .chat-input {
+        padding: 15px;
+        background-color: #f5f5f5;
+    }
+
+        .chat-input form {
+            display: flex;
+            align-items: center;
+        }
+
+    .chat-textarea {
+        flex: 1;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        resize: none;
+        margin-right: 10px;
+    }
+
+    .chat-send-btn {
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+        .chat-send-btn:hover {
+            background-color: #0056b3;
+        }
+
+</style>
+
+{% endblock %}

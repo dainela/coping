@@ -1,0 +1,25 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<a href="{% url 'category_list' %}" class="button">Back to Categories</a>
+<style>
+    
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3ea086; /* Green background */
+        color: white; /* White text */
+        text-decoration: none;
+        border-radius: 5px; /* Rounded corners */
+        transition: background-color 0.3s ease; /* Smooth transition */
+        margin-left: 1350px;
+    }
+
+        .button:hover {
+            background-color: #2c7763; /* Darker green on hover */
+        }
+        </style>
+<meta http-equiv="refresh" content="0; url=http://127.0.0.1:8000/prof/">
+
+{% endblock%}

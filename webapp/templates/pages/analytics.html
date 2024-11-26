@@ -1,0 +1,207 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="stats-container">
+
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-content">
+            <p class="stat-number">{{ total_superusers }}</p>
+            <p class="stat-label">Total Admin</p>
+        </div>
+        <div class="stat-progress">
+            <div class="progress-bar" style="width: 60%; background-color: black;"></div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-check"></i> <!-- Replace with your icon -->
+        </div>
+        <div class="stat-content">
+            <p class="stat-number">{{ total_staff }}</p>
+            <p class="stat-label">Total Psychologists</p>
+        </div>
+        <div class="stat-progress">
+            <div class="progress-bar" style="width: 50%; background-color: #ffeb3b;"></div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-user"></i>
+            <div class="stat-content">
+                <p class="stat-number">{{ total_users }}</p>
+                <p class="stat-label">Total User</p>
+            </div>
+            <div class="stat-progress">
+                <div class="progress-bar" style="width: 80%; background-color: #00bcd4;"></div>
+            </div>
+        </div>
+    </div>
+</div><br />
+<h1> Severity Analytics</h1>
+
+<div class="charts">
+    <canvas id="severityChart"></canvas>
+</div>
+
+<style>
+    h1 {
+        text-align: center;
+    }
+
+    .charts {
+        margin-top: 20px; /* Adjust this value as needed */
+        display: flex;
+        justify-content: center;
+    }
+
+    #profiletable {
+        margin-top: 20px; /* Adds some space between the chart and table */
+        margin-left: auto;
+        margin-right: auto;
+        width: 90%; /* Adjust as needed */
+    }
+
+    .user-stats {
+        margin-top: 20px;
+        text-align: center;
+    }
+</style>
+
+<script>
+    const ctx = document.getElementById('severityChart').getContext('2d');
+    const severityCounts = {{ severity_counts|safe }};
+    const labels = Object.keys(severityCounts);
+    const data = Object.values(severityCounts);
+
+    const severityChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'GAD-7 Severity Levels',
+                data: data,
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(153, 102, 255, 0.6)',
+                    'rgba(255, 99, 132, 0.6)'
+                ],
+                borderColor: 'rgba(255, 255, 255, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Severity Distribution of GAD-7 Responses'
+                }
+            }
+        }
+    });
+</script>
+
+<div class="charts">
+    <table id="profiletable">
+        <thead>
+            <tr>
+                <th onclick="sortTable(0)">ID</th>
+                <th onclick="sortTable(1)">Name</th>
+                <th onclick="sortTable(2)">Severity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.user }}</td>
+                <td>{{ user.severity }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No profiles found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+
+<style>
+    .stats-container {
+        display: flex;
+        justify-content: space-around;
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .stat-card {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        width: 22%; /* Adjust size as necessary */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .stat-icon {
+        font-size: 40px;
+        margin-bottom: 10px;
+    }
+
+    .stat-content {
+        margin-bottom: 15px;
+    }
+
+    .stat-number {
+        font-size: 30px;
+        font-weight: bold;
+        margin: 0;
+    }
+
+    .stat-label {
+        font-size: 14px;
+        color: #888;
+        margin: 0;
+    }
+
+    .stat-progress {
+        width: 100%;
+        height: 10px;
+        border-radius: 5px;
+        background-color: #f0f0f0;
+    }
+
+    .progress-bar {
+        height: 100%;
+        border-radius: 5px;
+    }
+
+    /* Optional responsiveness for smaller screens */
+    @media (max-width: 768px) {
+        .stats-container {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .stat-card {
+            width: 45%;
+            margin-bottom: 20px;
+        }
+    }
+</style>
+
+
+{% endblock %}

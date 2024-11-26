@@ -1,0 +1,55 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<div class="feedback-container">
+    <h2>Feedbacks</h2>
+    <!-- Search Form -->
+    <form id="feedbacks" method="GET" action="" class="search-form">
+        <input type="text" id="search" name="q" onkeyup="filterSearch()" placeholder="Search feedbacks..." value="{{ query }}" class="search-input">
+        <button type="submit" class="search-button">Search</button>
+    </form>
+
+    <table id="profiletable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Feedback</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for f in feedback %}
+            <tr>
+                <td>{{ f.id }}</td>
+                <td>{{ f.user.username }}</td>
+                <td>{{ f.email_address }}</td>
+                <td>{{ f.phone_number }}</td>
+                <td>{{ f.feed }}</td>
+                <td>{{ f.timestamp|date:"Y-m-d H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">No feedbacks found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+    <style>
+        #feedbacks {
+            background-color: white;
+            padding: 15px;
+            border: 2px solid #38b993;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    {% endblock %}

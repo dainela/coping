@@ -1,0 +1,274 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+<a href="{% url 'category_list' %}" class="button">Back to Categories</a>
+<style>
+    
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3ea086; /* Green background */
+        color: white; /* White text */
+        text-decoration: none;
+        border-radius: 5px; /* Rounded corners */
+        transition: background-color 0.3s ease; /* Smooth transition */
+        margin-left: 1350px;
+    }
+
+        .button:hover {
+            background-color: #2c7763; /* Darker green on hover */
+        }
+        </style>
+<body>
+    <div class="defusion-container">
+        <h1 class="defusion-title">Defusion Coping Technique Game</h1>
+        <p class="defusion-instruction">Click on the negative thought bubbles to defuse them! <br><br><b>Score 20 points to finish the game!</b></p>
+        <div id="game-area" class="defusion-game-area">
+            <!-- Thought bubbles will be dynamically added here -->
+        </div>
+        <div id="score" class="defusion-score">Score: 0</div>
+        <button id="start-game" class="defusion-btn">Start</button>
+        <button id="pause-game" class="defusion-btn">Pause</button>
+        <button id="stop-game" class="defusion-btn">Stop</button>
+
+        <!-- Encouragement and final congratulatory messages -->
+        <div id="encouragement-message" class="congrats-message" style="display: none;">
+            🎉 Keep going! You’re doing great! 🎉
+        </div>
+        <div id="congrats-message" class="congrats-message" style="display: none;">
+            🎉 Congratulations! You've reached 20 points! You defused all the negative thoughts! 🎉 <br> Game Finished!
+        </div>
+    </div>
+
+    <form method="post" action="{% url 'save_defusion_score' %}" id="score-form" style="display:none;">
+        {% csrf_token %}
+        <input type="hidden" name="score" value="{{ score }}">
+        <button type="submit">Save Score</button>
+    </form>
+
+
+    <script>
+        const gameArea = document.getElementById('game-area');
+        const scoreDisplay = document.getElementById('score');
+        const startGameBtn = document.getElementById('start-game');
+        const pauseGameBtn = document.getElementById('pause-game');
+        const stopGameBtn = document.getElementById('stop-game');
+        const congratsMessage = document.getElementById('congrats-message');
+        const encouragementMessage = document.getElementById('encouragement-message');
+
+        let score = 0;
+        let gameInterval;
+        let isPaused = false;
+        const negativeThoughts = [
+            "I'm not good enough.",
+            "I always fail.",
+            "Nobody likes me.",
+            "I'm a loser.",
+            "Things will never get better.",
+            "I'm scared.",
+            "I will never be good.",
+            "I'm not capable of success.",
+            "I'm too weak to handle this.",
+            "I don't deserve happiness.",
+            "I can't do anything right.",
+            "I'll never measure up.",
+            "I'm a burden to others.",
+            "Everything is my fault.",
+            "I'm worthless.",
+            "People think I'm a failure.",
+            "I'm not smart enough.",
+            "I'm not talented enough.",
+            "I'm always disappointing people.",
+            "No one would miss me.",
+            "I'm always letting people down.",
+            "I ruin everything I touch.",
+            "I'm too anxious to succeed.",
+            "Nothing I do matters.",
+            "I'm unlovable.",
+            "I'm just a disappointment."
+        ];
+
+        function createThoughtBubble() {
+            if (isPaused) return;
+
+            const bubble = document.createElement('div');
+            bubble.classList.add('defusion-bubble');
+
+            const thought = negativeThoughts[Math.floor(Math.random() * negativeThoughts.length)];
+            bubble.textContent = thought;
+
+            bubble.style.left = `${Math.random() * (gameArea.clientWidth - 100)}px`;
+            bubble.style.top = `${Math.random() * (gameArea.clientHeight - 100)}px`;
+
+            bubble.addEventListener('click', () => {
+                bubble.remove();
+                score++;
+                scoreDisplay.textContent = `Score: ${score}`;
+
+                // Show encouragement balloons and message every 5 points
+                if (score % 5 === 0 && score < 20) {
+                    showEncouragementMessage();
+                    showBalloons();
+                }
+
+                // Show final congratulatory message and stop game at 20 points
+                if (score === 20) {
+                    stopGame();
+                    showCongratsMessage();
+                    // Show the form to save the score
+                    document.getElementById('score-form').style.display = 'block';
+                }
+            });
+
+            gameArea.appendChild(bubble);
+
+            setTimeout(() => {
+                if (gameArea.contains(bubble)) {
+                    bubble.remove();
+                    score--;
+                    scoreDisplay.textContent = `Score: ${score}`;
+                }
+            }, 10000);
+        }
+
+        function showBalloons() {
+            for (let i = 0; i < 20; i++) {
+                const balloon = document.createElement('div');
+                balloon.classList.add('balloon');
+
+                balloon.style.left = `${Math.random() * 100}vw`;
+                balloon.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 75%)`;
+                balloon.style.animation = `floatUp ${3 + Math.random() * 2}s ease-out forwards`;
+
+                document.body.appendChild(balloon);
+
+                balloon.addEventListener('animationend', () => {
+                    balloon.remove();
+                });
+            }
+        }
+
+        function showEncouragementMessage() {
+            encouragementMessage.style.display = 'block';
+            setTimeout(() => {
+                encouragementMessage.style.display = 'none';
+            }, 3000); // Hide message after 3 seconds
+        }
+
+        function showCongratsMessage() {
+            congratsMessage.style.display = 'block';
+            setTimeout(() => {
+                congratsMessage.style.display = 'none';
+            }, 3000); // Hide message after 3 seconds
+        }
+
+        function startGame() {
+            if (isPaused) {
+                isPaused = false;
+            } else {
+                score = 0;
+                scoreDisplay.textContent = `Score: ${score}`;
+                gameArea.innerHTML = '';
+                congratsMessage.style.display = 'none';
+                encouragementMessage.style.display = 'none';
+            }
+
+            gameInterval = setInterval(() => {
+                createThoughtBubble();
+                if (score <= -5) {
+                    clearInterval(gameInterval);
+                    alert('Game over! Try to defuse more thoughts next time.');
+                }
+            }, 2000);
+        }
+
+        function pauseGame() {
+            if (!isPaused) {
+                isPaused = true;
+                clearInterval(gameInterval);
+            }
+        }
+
+        function stopGame() {
+            isPaused = false;
+            clearInterval(gameInterval);
+            gameArea.innerHTML = '';
+
+            // Don't reset the score here, as we need to save it first
+            scoreDisplay.textContent = `Score: ${score}`;
+            congratsMessage.style.display = 'none';
+            encouragementMessage.style.display = 'none';
+
+            // Update the hidden input field with the current score before stopping the game
+            document.querySelector('input[name="score"]').value = score;
+
+            // Now stop the game and show the form
+            document.getElementById('score-form').style.display = 'block'; // Show form after stop
+        }
+
+        startGameBtn.addEventListener('click', startGame);
+        pauseGameBtn.addEventListener('click', pauseGame);
+        stopGameBtn.addEventListener('click', stopGame);
+    </script>
+
+    <style>
+        /* Add styles for game area, buttons, balloons, etc. */
+        .defusion-instruction {
+            color: #38b993;
+        }
+
+        .defusion-title {
+            color: #38b993;
+        }
+
+        .balloon {
+            position: absolute;
+            width: 50px;
+            height: 70px;
+            border-radius: 50% 50% 50% 50% / 55% 55% 50% 50%;
+            opacity: 0.8;
+            animation: floatUp 5s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translateY(-100vh);
+                opacity: 0;
+            }
+        }
+
+        #encouragement-message {
+            position: fixed;
+            top: 2%;
+            left: 60%;
+            transform: translateX(-50%);
+            background-color: #38b993;
+            color: #000;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        #congrats-message {
+            position: fixed;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #38b993;
+            color: #000;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 1.5em;
+            text-align: center;
+            z-index: 1000;
+        }
+    </style>
+</body>
+{% endblock %}

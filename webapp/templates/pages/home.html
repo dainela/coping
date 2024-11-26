@@ -1,0 +1,339 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <title> Depression And Anxiety </title>
+    <script src="{% static 'js/script.js'%}" defer></script>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/marby.jpg' %}">
+    <link rel="stylesheet" type="text/css" href="{% static '/css/home.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+
+<style>
+    #myBtn {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 30px;
+        z-index: 99;
+        font-size: 18px;
+        border: none;
+        outline: none;
+        background-color: rgb(45, 179, 141);
+        color: white;
+        cursor: pointer;
+        padding: 15px;
+        border-radius: 4px;
+    }
+
+        #myBtn:hover {
+            background-color: #274235;
+        }
+
+    .collapsible {
+        background-color: white;
+        cursor: pointer;
+        padding: 10px;
+        width: 99%;
+        border: 4px solid rgb(45, 179, 141); /* Permanent border color */
+        text-align: left;
+        outline: none;
+        font-size: 15px;
+        transition: border-color 0.3s ease; /* Smooth transition for border highlight */
+        box-shadow: 4px 0 0 0 white; /* Shift border slightly to the right */
+        height: 100px;
+        margin: 10px;
+        margin-bottom: -5px;
+    }
+
+
+        .active, .collapsible:hover {
+            background-color: rgb(45, 179, 141);
+            border-color: rgb(34, 139, 110); /* Slightly darker border color on hover or active */
+        }
+
+        .collapsible:after {
+            content: '\002B';
+            color: black;
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+
+    .active:after {
+        content: "\2212";
+    }
+
+    .content {
+        padding: 0 18px;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.2s ease-out;
+        background-color: #f1f1f1;
+    }
+</style>
+
+
+<button onclick="topFunction()" id="myBtn" title="Go to top">Back</button>
+<script>
+    // Get the button
+    let mybutton = document.getElementById("myBtn");
+
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function () { scrollFunction() };
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            mybutton.style.display = "block";
+        } else {
+            mybutton.style.display = "none";
+        }
+    }
+
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+</script>
+
+
+<!-----buraattttttt------------------>
+<section class="home" id="home">
+
+
+
+    <div class="row">
+
+        <div class="image">
+            <image alt="logo" width="1200" height="700" class="d-inline-block align-text-top" src="{% static 'media/home-img.svg'%}"></image>
+        </div>
+
+        <div class="desc">
+            <h3>TAKE THE BEST TECHNIQUES TO COPE WITH YOUR ANXIETY</h3>
+            <p>
+                Welcome to BrighterMind, a web-based application system where we offer anxiety awareness, registered psychologists, mood tracker, online community chat, GAD-7 assessment
+                and different coping techniques to deal with your anxiety
+            </p>
+
+
+
+            <a href="#more" class="btn">  What is anxiety? <span class=""></span></a>
+        </div>
+
+    </div>
+
+</section>
+
+<section class="more" id="more">
+
+    <div class="row">
+
+        <div class="image">
+            <img src="image/about-img.svg" alt="">
+        </div>
+
+        <!-----buraattttttt------------------>
+
+
+
+
+
+
+        <button class="collapsible"> <H3> WHAT IS ANXIETY? </H3></button>
+        <div class="content">
+            <br>
+            <p>Anxiety is a feeling of fear, dread, and uneasiness. It might cause you to sweat, feel restless and tense, and have a rapid heartbeat. It can be a normal reaction to stress. </p>
+            <br>
+            <p>For example, you might feel anxious when faced with a difficult problem at work, before taking a test, or before making an important decision. </p>
+            <p>It can help you to cope. The anxiety may give you a boost of energy or help you focus. But for people with anxiety disorders, the fear is not temporary and can be overwhelming.</p>
+        </div>
+        <br>
+        <button class="collapsible"> <h3>What are anxiety disorders?</h3> </button>
+        <div class="content">
+            <br>
+            <p>Anxiety disorders are conditions in which you have anxiety that does not go away and can get worse over time. The symptoms can interfere with daily activities such as job performance, schoolwork, and relationships.</p>
+        </div>
+        <br>
+        <button class="collapsible">  <h3>What are the types of anxiety disorders?</h3></button>
+        <div class="content">
+            <br>
+            <h3>Generalized anxiety disorder</h3>
+
+            <p>Generalized anxiety disorder (GAD) usually involves a persistent feeling of anxiety or dread, which can interfere with daily life. It is not the same as occasionally worrying about things or experiencing anxiety due to stressful life events. People living with GAD experience frequent anxiety for months, if not years.</p></h3>
+        </div>
+
+        <br>
+        <button class="collapsible"> <h3>Symptoms of GAD include:</h3></button>
+        <div class="content">
+            <br>
+            <p> • Feeling restless, wound-up, or on-edge</p>
+            <p> • Being easily fatigued</p>
+            <p> • Having difficulty concentrating</p>
+            <p> • Being irritable</p>
+            <p>
+                •	Having headaches, muscle aches, stomachaches, or unexplained pains
+                •	Difficulty controlling feelings of worry
+                •	Having sleep problems, such as difficulty falling or staying asleep
+            </p>
+        </div>
+
+        <br>
+        <button class="collapsible"> <h3>Panic disorder</h3> </button>
+        <div class="content">
+            <br>
+            <p>People with panic disorder have frequent and unexpected panic attacks. Panic attacks are sudden periods of intense fear, discomfort, or sense of losing control even when there is no clear danger or trigger. Not everyone who experiences a panic attack will develop panic disorder.</p>
+            <p>During a panic attack, a person may experience:</p>
+            <br>
+            <p> •	Pounding or racing heart
+            <p> •	Sweating</p>
+            <p> •	Trembling or tingling</p>
+            <p> •	Chest pain</p>
+            <p> •	Feelings of impending doom</p>
+            <p> •	Feelings of being out of control</p>
+            <br>
+            <p>People with panic disorder often worry about when the next attack will happen and actively try to prevent future attacks by avoiding places, situations, or behaviors they associate with panic attacks. Panic attacks can occur as frequently as several times a day or as rarely as a few times a year.</p>
+            <br>
+        </div>
+        <br>
+
+        <button class="collapsible"> <h3>Social anxiety disorder</h3></button>
+        <div class="content">
+            <br>
+            <p>Social anxiety disorder is an intense, persistent fear of being watched and judged by others. For people with social anxiety disorder, the fear of social situations may feel so intense that it seems beyond their control. For some people, this fear may get in the way of going to work, attending school, or doing everyday things.</p>
+            <p>People with social anxiety disorder may experience:</p>
+            <br>
+            <p> • Blushing, sweating, or trembling </p>
+            <p> •	Sweating</p>
+            <p> •	Pounding or racing heart</p>
+            <p> •	Chest pain</p>
+            <p> •	Stomachaches</p>
+            <p> •	Rigid body posture or speaking with an overly soft voice</p>
+            <p> •	Difficulty making eye contact or being around people they don’t know</p>
+            <p> •	Feelings of self-consciousness or fear that people will judge them negatively</p>
+        </div>
+
+        <br>
+        <button class="collapsible"><h3>Phobia-related disorders</h3></button>
+        <div class="content">
+            <br>
+            <p>A phobia is an intense fear of—or aversion to—specific objects or situations. Although it can be realistic to be anxious in some circumstances, the fear people with phobias feel is out of proportion to the actual danger caused by the situation or object.</p>
+            <p>People with a phobia:</p>
+            <br>
+            <p> •	May have an irrational or excessive worry about encountering the feared object or situation</p>
+            <p>•	Take active steps to avoid the feared object or situation</p>
+            <p> •	Experience immediate intense anxiety upon encountering the feared object or situation</p>
+            <p> •	Endure unavoidable objects and situations with intense anxiety</p>
+            <br>
+            <p>There are several types of phobias and phobia-related disorders:</p>
+            <br>
+            <p> <b>Specific phobias (sometimes called simple phobias): </b> As the name suggests, people who have a specific phobia have an intense fear of, or feel intense anxiety about, specific types of objects or situations. Some examples of specific phobias include the fear of:</p>
+            <br>
+            <p>•	Flying</p>
+            <p> •	Heights</p>
+            <p> •	Sweating</p>
+            <p>•	Receiving injections</p>
+            <p> •	Blood</p>
+            <br>
+            <p><b>Social anxiety disorder (previously called social phobia):</b> People with social anxiety disorder have a general intense fear of, or anxiety toward, social or performance situations. They worry that actions or behaviors associated with their anxiety will be negatively evaluated by others, leading them to feel embarrassed. This worry often causes people with social anxiety to avoid social situations. Social anxiety disorder can manifest in a range of situations, such as within the workplace or the school environment.</p>
+            <br>
+            <p><b>Agoraphobia:</b>People with agoraphobia have an intense fear of two or more of the following situations:</p>
+            <p>•	Using public transportation</p>
+            <p> •	Being in open spaces</p>
+            <p> •	Being in enclosed spaces</p>
+            <p>•	Standing in line or being in a crowd</p>
+            <p> •	Being outside of the home alone</p>
+            <br>
+            <p>People with agoraphobia often avoid these situations, in part, because they think being able to leave might be difficult or impossible in the event they have panic-like reactions or other embarrassing symptoms. In the most severe form of agoraphobia, an individual can become housebound.</p>
+            <br>
+            <p><b>Separation anxiety disorder:</b>Separation anxiety is often thought of as something that only children deal with. However, adults can also be diagnosed with separation anxiety disorder. People with separation anxiety disorder fear being away from the people they are close to. They often worry that something bad might happen to their loved ones while they are not together. This fear makes them avoid being alone or away from their loved ones. They may have bad dreams about being separated or feel unwell when separation is about to happen.</p>
+            <p><b>Selective mutism:</b>: A somewhat rare disorder associated with anxiety is selective mutism. Selective mutism occurs when people fail to speak in specific social situations despite having normal language skills. Selective mutism usually occurs before the age of 5 and is often associated with extreme shyness, fear of social embarrassment, compulsive traits, withdrawal, clinging behavior, and temper tantrums. People diagnosed with selective mutism are often also diagnosed with other anxiety disorders.</p>
+        </div>
+        <br>
+        <button class="collapsible"><h3>What causes anxiety disorders?</h3></button>
+        <div class="content">
+            <br>
+            <p>The cause of anxiety is unknown. Factors such as genetics, brain biology and chemistry, stress, and your environment may play a role.</p>
+        </div>
+        <br>
+        <button class="collapsible"><h3>Who is at risk for anxiety disorders?</h3></button>
+        <div class="content">
+
+            <br>
+            <p>The risk factors for the different types of anxiety disorders can vary. For example, GAD and phobias are more common in women, but social anxiety affects men and women equally. There are some general risk factors for all types of anxiety disorders, including:</p>
+            <br>
+            <p>•	Certain personality traits, such as being shy or withdrawn when you are in new situations or meeting new people</p>
+            <p>•	Traumatic events in early childhood or adulthood</p>
+            <p>•	Family history of anxiety or other mental disorders</p>
+            <p>•	Some physical health conditions, such as thyroid problems or arrhythmia</p>
+        </div>
+        <br>
+
+        <button class="collapsible"><h3>What are the symptoms of anxiety disorders?</h3></button>
+        <div class="content">
+            <br>
+            <p>The different types of anxiety disorders can have different symptoms. But they all have a combination of:</p>
+            <br>
+            <p>•	Anxious thoughts or beliefs that are hard to control. They make you feel restless and tense and interfere with your daily life. They do not go away and can get worse over time.</p>
+            <p>•	Physical symptoms, such as a pounding or rapid heartbeat, unexplained aches and pains, dizziness, and shortness of breath</p>
+            <p>•	Changes in behavior, such as avoiding everyday activities you used to do</p>
+            <br>
+            <p>Using caffeine, other substances, and certain medicines can make your symptoms worse.</p>
+        </div>
+        <br>
+        <button class="collapsible"><h3>How are anxiety disorders diagnosed?</h3></button>
+        <div class="content">
+            <br>
+            <p>To diagnose anxiety disorders, your health care provider will ask about your symptoms and medical history. You may also have a physical exam and lab tests to make sure that a different health problem is not the cause of your symptoms.</p>
+            <p>If you don't have another health problem, you will get a psychological evaluation. Your provider may do it, or you may be referred to a mental health professional to get one.</p>
+        </div>
+        <br>
+
+        <button class="collapsible"><h3>What are the treatments for anxiety disorders?</h3></button>
+        <div class="content">
+            <br>
+            <p>The main treatments for anxiety disorders are psychotherapy (talk therapy), medicines, or both:</p>
+            <br>
+            <p><b>•	Psychotherapy </b>can help you recognize and change troubling emotions, thoughts, and behaviors. To be effective, it should focus on your specific anxieties and needs. There are many types; some of the types used for anxiety disorders include:</p>
+            <p><b>•	Cognitive behavioral therapy (CBT),</b> which teaches you different ways of thinking and behaving. It can help you change how you react to the things that cause you to feel fear and anxiety. It may include exposure therapy. This therapy focuses on having you confront your fears so that you will be able to do the things that you had been avoiding.</p>
+            <p><b>•	Acceptance and commitment therapy</b>may help with some anxiety disorders. It uses strategies such as mindfulness and goal setting to reduce discomfort and anxiety.</p>
+            <p><b>•	Medicines</b>to treat anxiety disorders include anti-anxiety medicines and certain antidepressants. Some types of medicines may work better for specific types of anxiety disorders. You should work closely with your provider to identify which medicine is best for you. You may need to try more than one medicine before you can find the right one.
+            <p><b>•	Support groups </b>Some people with anxiety disorders might benefit from joining a self-help or support group and sharing their problems and achievements with others. Support groups are available both in person and online. However, any advice you receive from a support group member should be used cautiously and does not replace treatment recommendations from a health care provider.</p>
+            <p><b>•	Stress management techniques </b>such as exercise, mindfulness, and meditation, also can reduce anxiety symptoms and enhance the effects of psychotherapy. You can learn more about how these techniques benefit your treatment by talking with a health care provider.</p>
+
+        </div>
+
+        <script>
+            var coll = document.getElementsByClassName("collapsible");
+            var i;
+
+            for (i = 0; i < coll.length; i++) {
+                coll[i].addEventListener("click", function () {
+                    this.classList.toggle("active");
+                    var content = this.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            }
+        </script>
+    </div>
+
+
+
+</section>
+
+<style>
+    html {
+        scroll-behavior: smooth;
+    }
+</style>
+
+
+
+{% endblock  %}

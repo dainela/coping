@@ -1,0 +1,77 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<div class="edit-profile-container">
+    <h2>Edit Profile</h2>
+
+    <form class="editprof" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="edit-profile-button">Save Changes</button>
+    </form>
+</div>
+
+<style>
+    /* Container Styling */
+    .edit-profile-container {
+        width: 60%;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #38b993;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .edit-profile-container h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    /* Form Styling */
+    .editprof {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        background-color: #38b993;
+    }
+
+    .editprof input, .editprof select, .editprof textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .editprof input:focus, .editprof select:focus, .editprof textarea:focus {
+        border-color: #2b8a6d;
+        outline: none;
+        box-shadow: 0 0 5px rgba(56, 185, 147, 0.5);
+    }
+
+    /* Button Styling */
+    .edit-profile-button {
+        background-color: #278166;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .edit-profile-button:hover {
+        background-color: #1e6453;
+        transform: scale(1.05);
+    }
+
+    .edit-profile-button:active {
+        transform: scale(0.95);
+    }
+</style>
+{% endblock %}

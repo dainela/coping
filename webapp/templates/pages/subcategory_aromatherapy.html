@@ -1,0 +1,387 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<a href="{% url 'category_list' %}" class="button">Back to Categories</a>
+
+    <div class="containers">
+        <h1>Aromatherapy Activity</h1>
+        <p>Select a scent to begin your relaxation journey.</p>
+
+        {% load static %}
+
+        <div class="scent-selection">
+            <div class="scent" id="lavender" onclick="selectScent('lavender')">
+                <img src="{% static 'media/lavender.jpg'%}" alt="Lavender" class="scent-image">
+                <p>Lavender</p>
+            </div>
+            <div class="scent" id="peppermint" onclick="selectScent('peppermint')">
+                <img src="{% static 'media/peppermint.jpg' %}" alt="Peppermint" class="scent-image">
+                <p>Peppermint</p>
+            </div>
+            <div class="scent" id="chamomile" onclick="selectScent('chamomile')">
+                <img src="{% static 'media/chamomile.jpg' %}" alt="Chamomile" class="scent-image">
+                <p>Chamomile</p>
+            </div>
+            <div class="scent" id="eucalyptus" onclick="selectScent('eucalyptus')">
+                <img src="{% static 'media/eucalyptus.jpg' %}" alt="Eucalyptus" class="scent-image">
+                <p>Eucalyptus</p>
+            </div>
+            <div class="scent" id="rose" onclick="selectScent('rose')">
+                <img src="{% static 'media/rose.jpg' %}" alt="Rose" class="scent-image">
+                <p>Rose</p>
+            </div>
+            <div class="scent" id="jasmine" onclick="selectScent('jasmine')">
+                <img src="{% static 'media/jasmine.jpg' %}" alt="Jasmine" class="scent-image">
+                <p>Jasmine</p>
+            </div>
+            <div class="scent" id="sandalwood" onclick="selectScent('sandalwood')">
+                <img src="{% static 'media/sandalwood.jpg' %}" alt="Sandalwood" class="scent-image">
+                <p>Sandalwood</p>
+            </div>
+            <div class="scent" id="tea_tree" onclick="selectScent('tea_tree')">
+                <img src="{% static 'media/tea tree.jpg' %}" alt="Tea Tree" class="scent-image">
+                <p>Tea Tree</p>
+            </div>
+            <div class="scent" id="vanilla" onclick="selectScent('vanilla')">
+                <img src="{% static 'media/vanilla.jpg' %}" alt="Vanilla" class="scent-image">
+                <p>Vanilla</p>
+            </div>
+            <div class="scent" id="clary_sage" onclick="selectScent('clary_sage')">
+                <img src="{% static 'media/clary sage.jpg' %}" alt="Clary Sage" class="scent-image">
+                <p>Clary Sage</p>
+            </div>
+            <div class="scent" id="ylang_ylang" onclick="selectScent('ylang_ylang')">
+                <img src="{% static 'media/ylang ylang.jpg' %}" alt="Ylang Ylang" class="scent-image">
+                <p>Ylang Ylang</p>
+            </div>
+            <div class="scent" id="cinnamon" onclick="selectScent('cinnamon')">
+                <img src="{% static 'media/cinnamon.jpg' %}" alt="Cinnamon" class="scent-image">
+                <p>Cinnamon</p>
+            </div>
+        </div>
+        
+
+        <!-- Relaxation Guide -->
+        <div class="relaxation-guide">
+            <h2 id="scentTitle">Your Selected Scent</h2>
+            <p id="scentDescription">Choose a scent to start.</p>
+        </div>
+
+        <!-- Breathing Exercise -->
+        <div class="breathing-exercise">
+            <h3>Follow the breathing guide to relax</h3>
+            <div class="breathing-circle" id="breathingCircle"></div>
+            <p>Breathe in and out slowly as the circle expands and contracts.</p>
+            <p id="timerDisplay">Time Remaining: 0s</p>  <!-- Timer Display -->
+        </div>
+</div>
+
+<script>
+    // Variable to keep track of the active timer interval
+    let activeTimer;
+
+    // Function to handle scent selection
+    function selectScent(scent) {
+        const scentTitle = document.getElementById('scentTitle');
+        const scentDescription = document.getElementById('scentDescription');
+
+        // Dictionary of scent descriptions and breathing times
+        const scents = {
+            'lavender': {
+                title: 'Lavender Scent Selected',
+                description: 'Lavender is known for its calming and soothing properties. Take a deep breath and relax.',
+                inhaleTime: 4,
+                holdTime: 4,
+                exhaleTime: 4
+            },
+            'peppermint': {
+                title: 'Peppermint Scent Selected',
+                description: 'Peppermint helps with focus and refreshes your mind. Breathe deeply and feel rejuvenated.',
+                inhaleTime: 3,
+                holdTime: 3,
+                exhaleTime: 3
+            },
+            'chamomile': {
+                title: 'Chamomile Scent Selected',
+                description: 'Chamomile promotes relaxation and helps with sleep. Inhale slowly and exhale your worries.',
+                inhaleTime: 5,
+                holdTime: 5,
+                exhaleTime: 5
+            },
+            'eucalyptus': {
+                title: 'Eucalyptus Scent Selected',
+                description: 'Eucalyptus clears the mind and improves concentration. Breathe in and feel refreshed.',
+                inhaleTime: 3,
+                holdTime: 3,
+                exhaleTime: 3
+            },
+            'rose': {
+                title: 'Rose Scent Selected',
+                description: 'Rose has uplifting properties and encourages relaxation. Breathe in the floral fragrance.',
+                inhaleTime: 4,
+                holdTime: 4,
+                exhaleTime: 4
+            },
+            'jasmine': {
+                title: 'Jasmine Scent Selected',
+                description: 'Jasmine is known to boost your mood and relax the body. Take deep breaths and unwind.',
+                inhaleTime: 4,
+                holdTime: 4,
+                exhaleTime: 4
+            },
+            'sandalwood': {
+                title: 'Sandalwood Scent Selected',
+                description: 'Sandalwood provides grounding and calming effects. Inhale deeply and feel at peace.',
+                inhaleTime: 5,
+                holdTime: 5,
+                exhaleTime: 5
+            },
+            'tea_tree': {
+                title: 'Tea Tree Scent Selected',
+                description: 'Tea Tree promotes clarity and a sense of freshness. Breathe in and clear your mind.',
+                inhaleTime: 3,
+                holdTime: 3,
+                exhaleTime: 3
+            },
+            'vanilla': {
+                title: 'Vanilla Scent Selected',
+                description: 'Vanilla has a comforting and relaxing aroma. Let the sweet fragrance calm your senses.',
+                inhaleTime: 4,
+                holdTime: 4,
+                exhaleTime: 4
+            },
+            'clary_sage': {
+                title: 'Clary Sage Scent Selected',
+                description: 'Clary Sage is great for relaxation and reducing stress. Take a deep breath and release tension.',
+                inhaleTime: 5,
+                holdTime: 5,
+                exhaleTime: 5
+            },
+            'ylang_ylang': {
+                title: 'Ylang Ylang Scent Selected',
+                description: 'Ylang Ylang helps reduce anxiety and calm the mind. Inhale and feel your stress melt away.',
+                inhaleTime: 4,
+                holdTime: 4,
+                exhaleTime: 4
+            },
+            'cinnamon': {
+                title: 'Cinnamon Scent Selected',
+                description: 'Cinnamon is warming and invigorating. Breathe in deeply and enjoy the stimulating aroma.',
+                inhaleTime: 3,
+                holdTime: 3,
+                exhaleTime: 3
+            },
+        };
+ 
+
+        // Update the title and description of the selected scent
+        scentTitle.innerText = scents[scent].title;
+        scentDescription.innerText = scents[scent].description;
+
+        // Update the breathing animation and timer
+        updateBreathingAnimation(scents[scent].inhaleTime, scents[scent].holdTime, scents[scent].exhaleTime);
+    }
+
+    // Function to update the breathing animation based on the selected scent
+    function updateBreathingAnimation(inhaleTime, holdTime, exhaleTime) {
+        const breathingCircle = document.getElementById('breathingCircle');
+
+        // Calculate the total cycle time (inhale + hold + exhale)
+        const totalCycleTime = inhaleTime + holdTime + exhaleTime;
+        const animationDuration = totalCycleTime * 1000; // Convert to milliseconds
+
+        // Apply the keyframe animation dynamically based on inhale, hold, and exhale times
+        const breathingKeyframes = `
+        @keyframes breathing {
+            0%, ${(inhaleTime / totalCycleTime) * 100}% {
+                transform: scale(1);
+            }
+            ${(inhaleTime / totalCycleTime) * 100}%, ${(inhaleTime + holdTime) / totalCycleTime * 100}% {
+                transform: scale(1.2); /* Hold phase */
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    `;
+
+        // Inject keyframes into the page
+        const style = document.createElement('style');
+        style.innerHTML = breathingKeyframes;
+        document.head.appendChild(style);
+
+        // Apply the animation to the circle
+        breathingCircle.style.animation = `breathing ${animationDuration}ms infinite`;
+
+        // Start the timer display
+        startTimer(inhaleTime, holdTime, exhaleTime);
+    }
+
+    // Function to start the timer and update the countdown
+    function startTimer(inhaleTime, holdTime, exhaleTime) {
+        const timerDisplay = document.getElementById('timerDisplay');
+
+        // Clear any existing timer
+        if (activeTimer) {
+            clearInterval(activeTimer);
+        }
+
+        let timeLeft = inhaleTime; // Start with inhale time
+        let phase = 'inhale'; // Initial phase
+
+        // Function to update the timer for each phase
+        const updateTimer = () => {
+            if (timeLeft <= 0) {
+                if (phase === 'inhale') {
+                    phase = 'hold';
+                    timeLeft = holdTime;
+                } else if (phase === 'hold') {
+                    phase = 'exhale';
+                    timeLeft = exhaleTime;
+                } else if (phase === 'exhale') {
+                    phase = 'inhale';
+                    timeLeft = inhaleTime;
+                }
+            }
+
+            // Update the timer display
+            if (phase === 'inhale') {
+                timerDisplay.innerText = `Inhale Time: ${timeLeft}s`;
+            } else if (phase === 'hold') {
+                timerDisplay.innerText = `Hold Time: ${timeLeft}s`;
+            } else if (phase === 'exhale') {
+                timerDisplay.innerText = `Exhale Time: ${timeLeft}s`;
+            }
+
+            timeLeft--;
+        };
+
+        // Start the timer and store its interval ID
+        updateTimer(); // Update immediately
+        activeTimer = setInterval(updateTimer, 1000);
+    }
+
+    // Initialize default text on page load
+    window.onload = function () {
+        document.getElementById('scentTitle').innerText = 'Select a Scent';
+        document.getElementById('scentDescription').innerText = 'Choose a scent to begin your relaxation journey.';
+        document.getElementById('timerDisplay').innerText = 'Inhale Time: 0s'; // Default timer
+    };
+
+</script>
+
+
+    <style>
+      
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3ea086; /* Green background */
+        color: white; /* White text */
+        text-decoration: none;
+        border-radius: 5px; /* Rounded corners */
+        transition: background-color 0.3s ease; /* Smooth transition */
+        margin-left: 1350px;
+    }
+
+        .button:hover {
+            background-color: #2c7763; /* Darker green on hover */
+        }
+        /* Container Styles */
+        .containers {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+    
+        /* Main Title */
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #38b993;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    
+        /* Scent Selection Section */
+        .scent-selection {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+    
+        .scent {
+            margin: 15px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 12px;
+            width: 120px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+    
+        .scent:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+    
+        .scent img {
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+    
+        /* Breathing Circle Animation */
+        .breathing-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background-color: #38b993;
+            margin: 30px auto;
+            animation: breathing 4s infinite ease-in-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    
+        /* Timer Styles */
+        #timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-top: 20px;
+            letter-spacing: 1px;
+        }
+    
+        /* Breathing Circle Animation Keyframes */
+        @keyframes breathing {
+            0%, 100% {
+                transform: scale(0.8);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+    
+        /* Timer Countdown Styling */
+        .timer-text {
+            font-size: 20px;
+            font-weight: 500;
+            color: #555;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+    </style>
+    
+{% endblock %}

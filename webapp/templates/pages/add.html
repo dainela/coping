@@ -1,0 +1,18 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<form class="addform" action="" method="POST">
+    <h1> Add a new Category for Coping Techniques </h1> <br />
+    {% csrf_token %}
+    {{ form.title.label}}<br>
+    {{ form.title}}
+    <br><br>
+    {{ form.description.label}}<br>
+    {{ form.description}}
+    <br><br>
+
+    <input type="submit" name="submit" />
+</form>
+
+{% endblock  %}

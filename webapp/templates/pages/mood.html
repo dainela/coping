@@ -1,0 +1,329 @@
+﻿{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<script src="{% static 'js/mood.js' %}" defer></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/mood.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+
+
+<div class="mood-calendar">
+    <h2>Mood Tracker Calendar</h2>
+
+ 
+    <div class="month-navigation">
+        <button id="prev-month" onclick="changeMonth(-1)">Previous</button>
+        <span id="month-label"></span>
+        <button id="next-month" onclick="changeMonth(1)">Next</button>
+    </div>
+
+    <div class="color-legend">
+        <div class="legend-item light-blue">
+            <p>Happy</p>
+        </div>
+        <div class="legend-item light-yellow">
+            <p>Excited</p>
+        </div>
+        <div class="legend-item light-violet">
+            <p>Neutral</p>
+        </div>
+        <div class="legend-item light-pink">
+            <p>Sad</p>
+        </div>
+        <div class="legend-item light-red">
+            <p>Anxious</p>
+        </div>
+    </div>
+
+    <div id="calendar"></div>
+
+    <p> Note: This is only a self mood tracker. </p>
+    <div class="mood-selector">
+        <label for="selected-date">Selected Date:</label>
+        <input type="text" id="selected-date" readonly>
+        <textarea id="mood-note" placeholder="Add a note..."></textarea>
+        <label for="mood">Select Mood:</label>
+        <select id="mood">
+            <option value="">Choose Mood</option>
+            <option value="happy">😊 Happy</option>
+            <option value="neutral">😐 Neutral</option>
+            <option value="sad">😞 Sad</option>
+            <option value="excited">😄 Excited</option>
+            <option value="anxious">😟 Anxious</option>
+        </select>
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+        <button onclick="saveMood()">Save Mood</button>
+    </div>
+</div>
+
+<style>
+
+    .note {
+        position: absolute;
+        top: -25px; /* Position the note above the day */
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 5px;
+        font-size: 0.9rem;
+        border-radius: 4px;
+        display: none; /* Hidden by default */
+        max-width: 100px;
+        text-align: center;
+        word-wrap: break-word;
+    }
+
+
+    textarea {
+        width: 100%; /* Makes the textarea take up full width */
+        height: 100px; /* Sets the height of the textarea */
+        padding: 10px; /* Adds padding inside the textarea */
+        border: 1px solid #ccc; /* Light gray border */
+        border-radius: 5px; /* Rounded corners */
+        font-size: 16px; /* Font size */
+        font-family: Arial, sans-serif; /* Font family */
+        color: #333; /* Text color */
+        background-color: #f9f9f9; /* Light background color */
+        resize: vertical; /* Allows vertical resizing only */
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+        outline: none; /* Removes the default blue outline on focus */
+    }
+
+        textarea:focus {
+            border-color: #66afe9; /* Change border color on focus */
+            box-shadow: 0 0 5px rgba(102, 175, 233, 0.5); /* Adds a glow effect on focus */
+        }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const today = new Date();
+        currentYear = today.getFullYear();
+        currentMonth = today.getMonth();
+        createCalendar(currentYear, currentMonth);
+        loadMoods();
+    });
+
+    const calendarContainer = document.getElementById('calendar');
+    const selectedDateInput = document.getElementById('selected-date');
+    const monthLabel = document.getElementById('month-label');
+    const moodSelect = document.getElementById('mood');
+    const noteInput = document.getElementById('mood-note');  // Add note input reference
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    let currentYear, currentMonth;
+
+
+    function createCalendar(year, month) {
+        calendarContainer.innerHTML = '';
+        const date = new Date(year, month);
+        monthLabel.textContent = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        for (let i = 0; i < firstDay; i++) {
+            const emptyCell = document.createElement('div');
+            emptyCell.className = 'day empty';
+            calendarContainer.appendChild(emptyCell);
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayElement = document.createElement('div');
+            dayElement.className = 'day';
+            dayElement.textContent = day;
+            const dateKey = new Date(year, month, day).toISOString().slice(0, 10);
+            dayElement.setAttribute('data-date', dateKey);
+            dayElement.addEventListener('click', () => selectDate(dateKey, dayElement));
+            calendarContainer.appendChild(dayElement);
+        }
+    }
+
+    function changeMonth(delta) {
+        currentMonth += delta;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        } else if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        createCalendar(currentYear, currentMonth);
+        loadMoods();
+    }
+
+    function selectDate(dateKey, dayElement) {
+        document.querySelectorAll('.day').forEach(day => day.classList.remove('selected'));
+        dayElement.classList.add('selected');
+        selectedDateInput.value = dateKey;
+    }
+
+    function saveMood() {
+        const dateKey = selectedDateInput.value;
+        const selectedMood = moodSelect.value;
+        const moodNote = noteInput.value;  // Get the value of the note
+        const saveButton = document.querySelector('button[onclick="saveMood()"]');
+
+        if (!dateKey || !selectedMood) {
+            alert("Please select a date and a mood.");
+            return;
+        }
+
+        saveButton.disabled = true;
+        saveButton.textContent = 'Saving...';
+
+        fetch("{% url 'save_mood' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({ date: dateKey, mood: selectedMood, note: moodNote })  // Include note in request
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    displayMood(dateKey, selectedMood);
+                } else {
+                    alert('Failed to save mood');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                saveButton.disabled = false;
+                saveButton.textContent = 'Save Mood';
+            });
+    }
+
+    function loadMoods() {
+        fetch('{% url "get_moods" %}')
+            .then(response => response.json())
+            .then(data => {
+                for (const [date, moodData] of Object.entries(data)) {
+                    displayMood(date, moodData); // Pass both mood and note
+                }
+            });
+    }
+    function displayMood(dateKey, moodData) {
+        const dayElement = document.querySelector(`.day[data-date="${dateKey}"]`);
+        if (dayElement) {
+            let moodEmoji;
+            let moodColor;
+
+            switch (moodData.mood) {
+                case 'happy':
+                    moodEmoji = '😊';
+                    moodColor = 'lightblue';
+                    break;
+
+                case 'neutral':
+                    moodEmoji = '😐';
+                    moodColor = 'lightviolet';
+                    break;
+
+                case 'sad':
+                    moodEmoji = '😞';
+                    moodColor = 'lightpink';
+                    break;
+
+                case 'excited':
+                    moodEmoji = '😄';
+                    moodColor = 'lightyellow';
+                    break;
+
+                case 'anxious':
+                    moodEmoji = '😟';
+                    moodColor = '#FF7F7F ';
+                    break;
+
+                default:
+                    moodEmoji = '';
+                    moodColor = '';
+            }
+
+            const existingMood = dayElement.querySelector('.mood');
+            const existingNote = dayElement.querySelector('.note');
+
+            if (existingMood) existingMood.remove();
+            if (existingNote) existingNote.remove();
+
+            // Add the mood emoji to the day
+            const moodSpan = document.createElement('span');
+            moodSpan.className = 'mood';
+            moodSpan.textContent = moodEmoji;
+            dayElement.appendChild(moodSpan);
+
+            // Add the note tooltip to the day (hidden initially)
+            const noteSpan = document.createElement('span');
+            noteSpan.className = 'note';
+            noteSpan.textContent = moodData.note;
+            noteSpan.style.display = 'none'; // Hide by default
+            dayElement.appendChild(noteSpan);
+
+            // Change background color for the day based on the mood
+            dayElement.style.backgroundColor = moodColor;
+
+            // Show the note when the day is hovered
+            dayElement.addEventListener('mouseenter', () => {
+                noteSpan.style.display = 'block'; // Show note on hover
+            });
+            dayElement.addEventListener('mouseleave', () => {
+                noteSpan.style.display = 'none'; // Hide note when not hovered
+            });
+        }
+    }
+
+</script>
+
+<style>
+    .color-legend {
+        display: flex;
+        justify-content: center; /* Center items horizontally */
+        align-items: center; /* Center items vertically */
+        gap: 20px; /* Add spacing between color blocks */
+        font-family: Arial, sans-serif;
+    }
+
+    .legend-item {
+        text-align: center; /* Center text below each color block */
+        width: 50px; /* Set a thinner width for the color blocks */
+        height: 10px; /* Set a uniform height for the color blocks */
+        display: flex;
+        flex-direction: column; /* Arrange color and text vertically */
+        align-items: center; /* Center text below color block */
+    }
+
+        .legend-item p {
+            margin-top: 20px; /* Space between color and description */
+            font-size: 12px; /* Make the description text smaller */
+        }
+
+    .color-legend .light-blue {
+        background-color: #ADD8E6;
+    }
+
+    .color-legend .light-yellow {
+        background-color: #FFFFE0;
+    }
+
+    .color-legend .light-violet {
+        background-color: #D3A6FF;
+    }
+
+    .color-legend .light-pink {
+        background-color: #FFB6C1;
+    }
+
+    .color-legend .light-red {
+        background-color: #FF7F7F;
+    }
+</style>
+
+{% endblock %}

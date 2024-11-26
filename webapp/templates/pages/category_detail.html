@@ -1,0 +1,106 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+
+<div class="color-legend">
+    <div class="legend-item light-blue">
+        <p>Minimal</p>
+    </div>
+    <div class="legend-item light-yellow">
+        <p>Mild</p>
+    </div>
+    <div class="legend-item light-violet">
+        <p>Moderate</p>
+    </div>
+    <div class="legend-item light-pink">
+        <p>Severe</p>
+    </div>
+</div>
+
+
+<a href="{% url 'category_list' %}" class="button">Back to Categories</a>
+
+<h1>{{ category.name }} </h1>
+ {% for subcategory in subcategories %}
+
+
+
+<style>
+    .color-legend {
+        display: flex;
+        justify-content: center; /* Center items horizontally */
+        align-items: center; /* Center items vertically */
+        gap: 20px; /* Add spacing between color blocks */
+        font-family: Arial, sans-serif;
+    }
+
+    .legend-item {
+        text-align: center; /* Center text below each color block */
+        width: 50px; /* Set a thinner width for the color blocks */
+        height: 10px; /* Set a uniform height for the color blocks */
+        display: flex;
+        flex-direction: column; /* Arrange color and text vertically */
+        align-items: center; /* Center text below color block */
+    }
+
+        .legend-item p {
+            margin-top: 20px; /* Space between color and description */
+            font-size: 12px; /* Make the description text smaller */
+        }
+
+    .light-blue {
+        background-color: #ADD8E6;
+    }
+
+    .light-yellow {
+        background-color: #FFFFE0;
+    }
+
+    .light-violet {
+        background-color: #D3A6FF;
+    }
+
+    .light-pink {
+        background-color: #FFB6C1;
+    }
+
+</style>
+
+<div class="category-box" style="background-color: {{ subcategory.color }};">
+    <!-- Display Image -->
+    <img src="{{ subcategory.image.url }}" alt="{{ subcategory.name }}" class="subcategory-image"><br />
+
+    <!-- Display Description in Italics -->
+    <p><i>{{ subcategory.description }}</i></p><br />
+
+    <!-- Display the Subcategory Name -->
+    <div class="title">{{ subcategory.name }}</div>
+
+    <!-- Link to View Details Page -->
+    <a href="{% url 'subcategory_detail' category.slug subcategory.slug %}" class="view-details">View Details</a>
+</div>
+
+{% endfor %}
+
+
+
+<style>
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3ea086; /* Green background */
+        color: white; /* White text */
+        text-decoration: none;
+        border-radius: 5px; /* Rounded corners */
+        transition: background-color 0.3s ease; /* Smooth transition */
+        margin-left: 1350px;
+    }
+
+        .button:hover {
+            background-color: #2c7763; /* Darker green on hover */
+        }
+</style>
+
+
+{% endblock  %}

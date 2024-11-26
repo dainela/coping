@@ -1,0 +1,84 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+
+<style>
+    .message-container {
+        width: 60%;
+        margin: auto;
+    }
+
+        .message-container h2 {
+            text-align: center;
+        }
+
+    .message-card {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin: 10px 0;
+    }
+
+        .message-card p {
+            font-size: 16px;
+        }
+
+        .message-card .buttons {
+            margin-top: 10px;
+        }
+
+        .message-card button {
+            padding: 5px 15px;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+
+    .accept-btn {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .reject-btn {
+        background-color: #f44336;
+        color: white;
+    }
+</style>
+</head>
+<body>
+    <div class="message-container">
+        <h2>Incoming Messages</h2>
+        {% for message in messages %}
+        <div class="message-card">
+            <p><strong>From:</strong> {{ message.sender.username }}</p>
+            <p><strong>Message:</strong> {{ message.content }}</p>
+            <div class="buttons">
+                <form method="POST" style="display: inline-block;">
+                    {% csrf_token %}
+                    <input type="hidden" name="message_id" value="{{ message.id }}">
+                    <button type="submit" name="action" value="accept" class="accept-btn">Accept</button>
+                </form>
+                <form method="POST" style="display: inline-block;">
+                    {% csrf_token %}
+                    <input type="hidden" name="message_id" value="{{ message.id }}">
+                    <button type="submit" name="action" value="reject" class="reject-btn">Reject</button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <p>No pending requests.</p>
+        {% endfor %}
+    </div>
+
+
+    <h2>Message Status</h2>
+    {% for message in professional.received_messages.all %}
+    <div class="message-status">
+        <p><strong>From:</strong> {{ message.sender.username }}</p>
+        <p><strong>Status:</strong> {{ message.get_status_display }}</p>
+        <p>{{ message.content }}</p>
+    </div>
+    {% empty %}
+    <p>No messages yet.</p>
+    {% endfor %}
+
+    {% endblock %}

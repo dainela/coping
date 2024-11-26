@@ -1,0 +1,546 @@
+﻿{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<a href="{% url 'category_list' %}" class="button">Back to Categories</a>
+
+<div class="muscle-container">
+    <h1>Progressive Muscle Relaxation</h1>
+    <div id="stars">
+        <span class="star" id="star1">☆</span>
+        <span class="star" id="star2">☆</span>
+        <span class="star" id="star3">☆</span>
+    </div>
+    <div id="imageContainer">
+        <img id="muscleImage" src="{% static 'media/musclerelax.jpg'%}" alt="Muscle group illustration">
+    </div>
+    <p id="instructions">Click "Start" to begin your relaxation journey.</p>
+    <p id="timer"></p>
+    <div class="controls">
+        <button id="startButton">Start</button>
+        <button id="checkButton" disabled>Check</button>
+    </div>
+    <div id="progress" class="progress-bar">
+        <div id="progressFill"></div>
+    </div>
+    <p id="score">Steps Completed: 0 / 12</p>
+</div>
+
+<!-- Balloon Container -->
+<div id="balloonContainer"></div>
+
+<!-- Congratulations Popup -->
+<div id="congratsPopup" class="hidden">
+    <p>Keep going, you're doing great!</p>
+</div>
+
+<!-- Final Congratulations -->
+<div id="finalPopup" class="hidden">
+    <p>Good job, you finished the game!</p>
+    <img src="trophy.png" alt="Trophy">
+</div>
+
+<div class = "savescoreform">
+<div id="saveScoreForm" class="hidden">
+    <h2>Your Score: 12 / 12</h2>
+    <form class = "savescore" method="POST" action="{% url 'bodyscan' %}">
+        {% csrf_token %}
+        <input type="hidden" name="score" id="score" value="12">
+        <button type="submit">Save Score</button>
+    </form>
+</div>
+
+<script>
+    const steps = [
+        { text: "Curl your toes downward and hold… now relax.", image: "{% static 'media/toe.png'%}" },
+        { text: "Tighten your calf muscles by pulling your toes upward… hold… now relax.", image: "{% static 'media/foot.webp'%}" },
+        { text: "Squeeze your thigh muscles tightly… hold… now relax.", image: "{% static 'media/relax.jpg'%}" },
+        { text: "Clench your fist tightly… hold… now relax.", image: "{% static 'media/punch.jpg'%}" },
+        { text: "Draw your forearm up to your shoulder and tighten your biceps… hold… now relax.", image: "{% static 'media/biceps.jpg'%}" },
+        { text: "Tighten your buttocks by pulling them together… hold… now relax.", image: "{% static 'media/higa.jpg'%}" },
+        { text: "Suck your stomach in tightly… hold… now relax.", image: "{% static 'media/tummy.jpg'%}" },
+        { text: "Take a deep breath to tighten your chest… hold… now relax.", image: "{% static 'media/inhale.jpg'%}" },
+        { text: "Raise your shoulders to your ears and tighten… hold… now relax.", image: "{% static 'media/ears.jpg'%}" },
+        { text: "Open your mouth wide to stretch your jaw… hold… now relax.", image: "{% static 'media/wow.jpg'%}" },
+        { text: "Clench your eyelids tightly shut… hold… now relax.", image: "{% static 'media/eye.jpg'%}" },
+        { text: "Raise your eyebrows as far as you can… hold… now relax.", image: "{% static 'media/eyes.jpg'%}" }
+    ];
+
+    let currentStep = 0;
+    let score = 0;
+    let timerInterval;
+    let timerDone = false;
+
+    const instructions = document.getElementById("instructions");
+    const startButton = document.getElementById("startButton");
+    const checkButton = document.getElementById("checkButton");
+    const progressFill = document.getElementById("progressFill");
+    const timerDisplay = document.getElementById("timer");
+    const muscleImage = document.getElementById("muscleImage");
+    const scoreDisplay = document.getElementById("score");
+    const congratsPopup = document.getElementById("congratsPopup");
+    const balloonContainer = document.getElementById("balloonContainer");
+    const finalPopup = document.getElementById("finalPopup");
+    const stars = [
+        document.getElementById("star1"),
+        document.getElementById("star2"),
+        document.getElementById("star3")
+    ];
+
+    startButton.addEventListener("click", startGame);
+    checkButton.addEventListener("click", completeStep);
+
+    function startGame() {
+        currentStep = 0;
+        score = 0;
+        timerDone = false;
+        updateStep();
+        updateProgress();
+        updateScore();
+        resetStars();
+        hideFinalPopup();
+        startButton.disabled = true;
+        checkButton.disabled = true;
+    }
+
+    function updateStep() {
+        instructions.textContent = steps[currentStep].text;
+        muscleImage.src = steps[currentStep].image;
+        startTimer(0); // Set a 10-second timer for each step
+    }
+
+    function completeStep() {
+        if (!timerDone) return;
+
+        clearInterval(timerInterval);
+        score++;
+        updateScore();
+        currentStep++;
+        if (currentStep % 4 === 0) {
+            activateStar(Math.floor(currentStep / 4) - 1);
+            showCongratsPopup();
+        }
+        if (currentStep < steps.length) {
+            updateStep();
+            updateProgress();
+        } else {
+            finishGame();
+        }
+    }
+
+    function startTimer(seconds) {
+        let timeLeft = seconds;
+        timerDisplay.textContent = `Hold for: ${timeLeft}s`;
+        timerDone = false;
+        checkButton.disabled = true;
+
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            timerDisplay.textContent = `Hold for: ${timeLeft}s`;
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timerDisplay.textContent = "Time's up! Press 'Check' to continue.";
+                timerDone = true;
+                checkButton.disabled = false;
+            }
+        }, 1000);
+    }
+
+    function updateProgress() {
+        const progressPercentage = ((currentStep + 1) / steps.length) * 100;
+        progressFill.style.width = `${progressPercentage}%`;
+    }
+
+    function updateScore() {
+        scoreDisplay.textContent = `Steps Completed: ${score} / ${steps.length}`;
+    }
+
+    function showCongratsPopup() {
+        congratsPopup.classList.remove("hidden");
+        setTimeout(() => {
+            congratsPopup.classList.add("hidden");
+        }, 3000);
+        releaseBalloons(10);
+    }
+
+    function releaseBalloons(count) {
+        for (let i = 0; i < count; i++) {
+            const balloon = document.createElement("div");
+            balloon.classList.add("balloon");
+            balloon.style.left = Math.random() * 100 + "vw";
+            balloon.style.animationDuration = Math.random() * 3 + 2 + "s";
+            balloonContainer.appendChild(balloon);
+
+            setTimeout(() => {
+                balloon.remove();
+            }, 3000);
+        }
+    }
+
+    function activateStar(index) {
+        if (index < stars.length) {
+            stars[index].classList.add("active");
+        }
+    }
+
+    function resetStars() {
+        stars.forEach((star) => {
+            star.classList.remove("active");
+        });
+    }
+
+    function hideFinalPopup() {
+        finalPopup.classList.add("hidden");
+    }
+
+    function finishGame() {
+        instructions.textContent = "Amazing job! You've completed all the relaxation steps.";
+        muscleImage.src = "{% static 'media/congrats.jpg'%}";
+        timerDisplay.textContent = "";
+        finalPopup.classList.remove("hidden");
+        startButton.disabled = false;
+        checkButton.disabled = true;
+        progressFill.style.width = "100%";
+
+        let displayedScore = scoreDisplay.textContent.split(":")[1].trim();
+        let scoreValue = parseInt(displayedScore.split("/")[0].trim());
+
+        document.getElementById("score").value = scoreValue;
+
+        document.getElementById("saveScoreForm").classList.remove("hidden");
+    }
+</script>
+
+
+
+
+
+<style>
+
+.savescoreform{
+    margin-left: 700px;
+}
+    .savescore{
+        background-color: white;
+        margin-left: 10px;
+    }
+   .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3ea086; /* Green background */
+        color: white; /* White text */
+        text-decoration: none;
+        border-radius: 5px; /* Rounded corners */
+        transition: background-color 0.3s ease; /* Smooth transition */
+        margin-left: 1350px;
+    }
+
+        .button:hover {
+            background-color: #2c7763; /* Darker green on hover */
+        }
+    .muscle-container {
+        margin-left: 320px;
+        margin-top: 50px;
+        background: #fff;
+        padding: 3rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        max-width: 1000px;
+        width: 90%;
+        border: 2px solid #38b993;
+    }
+
+    subcategory_body-scan-meditation .container {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        max-width: 1000px;
+        width: 90%;
+        border: 2px solid #007b83;
+    }
+
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: #007b83;
+    }
+
+    #instructions {
+        font-size: 1.2rem;
+        margin: 1.5rem 0;
+        line-height: 1.6;
+    }
+
+    .controls {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    button {
+        background: #007b83;
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background 0.3s;
+    }
+
+        button:disabled {
+            background: #cce7e8;
+            cursor: not-allowed;
+        }
+
+        button:hover:enabled {
+            background: #005f61;
+        }
+
+    .progress-bar {
+        margin-top: 1.5rem;
+        height: 15px;
+        background: #cce7e8;
+        border-radius: 10px;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    #progressFill {
+        height: 100%;
+        width: 0;
+        background: #007b83;
+        transition: width 0.5s ease;
+    }
+
+    #imageContainer {
+        width: 320px; /* Fixed width */
+        height: 320px; /* Fixed height */
+        border: 2px solid #cce7e8;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden; /* Ensures the image doesn't overflow the container */
+        margin-top: 10px;
+        margin-left: 300px;
+    }
+
+        #imageContainer img {
+            width: 100%; /* Ensures the image fits the container */
+        height: 100%; /* Ensures the image fits the container */
+        object-fit: cover; /* Ensures the image maintains its aspect ratio */
+        
+        }
+
+
+    #muscleImage {
+        max-width: 100%;
+        height: auto;
+        border: 2px solid #cce7e8;
+        border-radius: 10px;
+    }
+
+    #timer {
+        font-size: 1.5rem;
+        color: #007b83;
+        margin: 1rem 0;
+    }
+
+    #score {
+        margin-top: 1rem;
+        font-size: 1.2rem;
+        color: #007b83;
+        font-weight: bold;
+    }
+
+    /* Existing CSS remains unchanged with these additions */
+
+    #balloonContainer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+    }
+
+    .balloon {
+        position: absolute;
+        width: 50px;
+        height: 70px;
+        background: radial-gradient(circle, rgba(255, 0, 0, 1) 60%, rgba(255, 255, 255, 0.8) 100%);
+        border-radius: 50%;
+        animation: floatUp 5s linear infinite;
+    }
+
+    @keyframes floatUp {
+        0% {
+            transform: translateY(100vh);
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateY(-20vh);
+            opacity: 0;
+        }
+    }
+
+    #congratsPopup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid #007b83;
+        padding: 2rem;
+        border-radius: 10px;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #007b83;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        animation: popupFade 3s forwards;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    @keyframes popupFade {
+        0% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+        }
+    }
+
+    /* Existing CSS remains unchanged with these additions */
+
+    #balloonContainer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+    }
+
+    .balloon {
+        position: absolute;
+        width: 50px;
+        height: 70px;
+        background: radial-gradient(circle, rgba(255, 0, 0, 1) 60%, rgba(255, 255, 255, 0.8) 100%);
+        border-radius: 50%;
+        animation: floatUp 5s linear infinite;
+    }
+
+    @keyframes floatUp {
+        0% {
+            transform: translateY(100vh);
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateY(-20vh);
+            opacity: 0;
+        }
+    }
+
+    #congratsPopup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid #007b83;
+        padding: 2rem;
+        border-radius: 10px;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #007b83;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        animation: popupFade 3s forwards;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    @keyframes popupFade {
+        0% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+        }
+    }
+
+    /* Existing CSS remains unchanged with these additions */
+
+    #stars {
+        display: flex;
+        justify-content: center;
+        margin: 1rem 0;
+    }
+
+    .star {
+        font-size: 2rem;
+        color: #ddd;
+        transition: color 0.3s, transform 0.3s;
+    }
+
+        .star.active {
+            color: gold;
+            transform: scale(1.5);
+        }
+
+    #finalPopup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid #007b83;
+        padding: 2rem;
+        border-radius: 10px;
+        text-align: center;
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #007b83;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        animation: popupFade 3s forwards;
+    }
+
+        #finalPopup img {
+            width: 100px;
+            margin-top: 1rem;
+        }
+
+    .hidden {
+        display: none;
+    }
+</style>
+<script>
+    function previewImage(event) {
+        const image = document.getElementById('image-preview');
+        const file = event.target.files[0];
+
+        if (file) {
+            image.src = URL.createObjectURL(file);
+            image.style.display = 'block';
+        }
+    }
+</script>
+
+{% endblock%}

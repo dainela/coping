@@ -1,0 +1,144 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+
+
+
+<form class = "feedback-container" method="POST">
+    {% csrf_token %}
+    <div>
+        <label for="email_address">Email Address:</label>
+        <input type="email" id="email_address" name="email_address" required>
+    </div>
+    <div>
+        <label for="feed">Feedback:</label>
+        <textarea id="feed" name="feed" rows="5" required></textarea>
+    </div>
+    <button type="submit">Submit Feedback</button>
+</form>
+
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<h2>Previous Feedback</h2>
+<ul>
+    {% for feedback in feedback_list %}
+    <li>
+        <strong>{{ feedback.user.username }}</strong> ({{ feedback.date|date:"M d, Y H:i" }}):<br>
+        {{ feedback.feed }}
+    </li>
+    {% endfor %}
+</ul>
+
+<style>
+
+    h2{
+        margin-left: 700px;
+    }
+    .feedback-container {
+        width: 80%;
+        max-width: 800px;
+        margin: 2rem auto;
+        background: #38b993;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Form Styles */
+    form {
+        margin-bottom: 2rem;
+    }
+
+        form div {
+            margin-bottom: 1rem;
+        }
+
+        form label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+
+        form input,
+        form textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        form textarea {
+            resize: vertical;
+        }
+
+        form button {
+            background-color: #2b8b6e;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            form button:hover {
+                background-color: #175240;
+            }
+
+    /* Feedback Messages */
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .messages li {
+        background-color: #dff0d8;
+        border: 1px solid #d6e9c6;
+        color: #3c763d;
+        padding: 0.75rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+    }
+
+    /* Feedback List */
+    .feedback-list {
+        margin-top: 2rem;
+    }
+
+        .feedback-list li {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            background: #f9f9f9;
+        }
+
+            .feedback-list li strong {
+                font-size: 1.1rem;
+                color: #333;
+            }
+
+            .feedback-list li span {
+                font-size: 0.9rem;
+                color: #666;
+                display: block;
+                margin-bottom: 0.5rem;
+            }
+
+            .feedback-list li p {
+                margin: 0;
+                line-height: 1.5;
+            }
+</style>
+
+{% endblock  %}

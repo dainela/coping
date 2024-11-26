@@ -1,0 +1,382 @@
+﻿{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+<div id="patient-profile-page">
+    <h1>Our Patients</h1>
+
+    <!-- Add a Print Button -->
+
+
+    <form id="patients" method="GET" action="{% url 'viewpatient' %}" class="search-form">
+        <input type="text" name="search" placeholder="Search by name or email" value="{{ search_query }}">
+        <button type="submit">Search</button>
+    </form>
+
+    {% for response in latest_responses %}
+    <div class="patient-profile-container"> <br /> <br />
+        <div class="print-button-container">
+            <i class="fas fa-print print-icon" onclick="printContainer(this)" title="Print Profile"></i>
+        </div>
+        <div class="profile-header">
+
+            <div class="profile-image">
+                <img src="{% if response.user.profile.image %}{{ response.user.profile.image.url }}{% else %}https://via.placeholder.com/150{% endif %}" alt="User Image">
+            </div>
+            <div class="profile-info">
+                <h2>{{ response.user.first_name }} {{ response.user.last_name }}</h2>
+                <p>{{ response.user.email }}</p><br />
+
+                <!-- Display total task score -->
+                <p><span>To-Do-List Score: {{ response.total_task_score }}</span></p>
+
+                <!-- Show the defusion score with a trophy icon -->
+                <p><span>Defusion Technique Score: {{ response.total_defusion_score }}</span></p>
+
+                <!-- Show Cognitive Reframing score -->
+                <p><span>Cognitive Reframing: {{ response.total_mind_management_score }}</span></p>
+
+                <!-- Show Distraction Score -->
+                <p id="distraction-score"><span>Distraction Score: {{ response.total_distraction_score }}</span></p>
+
+                <!-- Show Relaxation Score -->
+                <p><span>Progressive Muscle Relaxation Score: {{ response.total_relaxation_score }}</span></p>
+
+                <!-- Show Severity -->
+                <p class="severity-level">Severity: {{ response.severity }}</p>
+            </div>
+        </div>
+
+        <!-- Collapsible Questionnaire Responses Section -->
+        <button class="collapsible">Questionnaire Responses</button>
+        <div class="content">
+            <ul class="response-list">
+                <li><span>Feeling nervous, anxious, or on edge?</span> <strong>{{ response.responses.q1 }}</strong></li>
+                <li><span>Not being able to stop or control worrying?</span> <strong>{{ response.responses.q2 }}</strong></li>
+                <li><span>Worrying too much about different things?</span> <strong>{{ response.responses.q3 }}</strong></li>
+                <li><span>Trouble relaxing?</span> <strong>{{ response.responses.q4 }}</strong></li>
+                <li><span>Being so restless that it's hard to sit still?</span> <strong>{{ response.responses.q5 }}</strong></li>
+                <li><span>Becoming easily annoyed or irritable?</span> <strong>{{ response.responses.q6 }}</strong></li>
+                <li><span>Feeling afraid as if something awful might happen?</span> <strong>{{ response.responses.q7 }}</strong></li>
+            </ul>
+            <p class="interpretation">0 - Not at all, 1 - Several days, 2 - More than half the days, 3 - Nearly every day</p>
+        </div>
+
+        <!-- Exercise Entries -->
+        <div class="exercise-section">
+            <button class="collapsible">Exercise Performances:</button>
+            <div class="content">
+                <ul class="response-list">
+                    {% for exercise in response.exercises %}
+                    <li><span>{{ exercise.exercise }}</span> - Score: <strong>{{ exercise.score }}</strong> - Time Taken: <strong>{{ exercise.time_taken }}</strong></li>
+                    {% empty %}
+                    <li>No exercises completed yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Yoga Entries -->
+        <div class="yoga-section">
+            <button class="collapsible">Yoga Performances:</button>
+            <div class="content">
+                <ul class="response-list">
+                    {% for yoga in response.yoga %}
+                    <li><span>{{ yoga.exercise }}</span> - Score: <strong>{{ yoga.score }}</strong> - Time Taken: <strong>{{ yoga.time_taken }}</strong></li>
+                    {% empty %}
+                    <li>No yoga completed yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div> 
+    </div>
+    {% empty %}
+    <p>No responses available for patients.</p>
+    {% endfor %}
+
+
+</div>
+
+
+
+<script>
+
+    function printContainer(button) {
+        // Locate the container for the button clicked
+        const profileContainer = button.closest(".patient-profile-container");
+
+        // Create a new window for printing
+        const printWindow = window.open("", "PRINT", "height=600,width=800");
+
+        // Copy the container's HTML content into the new window
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Print Profile</title>
+                    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+                    <style>
+                        /* Include your styles for the profile here */
+                        .patient-profile-container { 
+                            background-color: #fff; 
+                            border: 2px solid #38b993; 
+                            border-radius: 12px; 
+                            margin: 20px auto; 
+                            padding: 20px; 
+                            width: 90%; 
+                            max-width: 800px; 
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+                            font-family: Arial, sans-serif;
+                        }
+                        .profile-header {
+                            display: flex;
+                            align-items: center;
+                            margin-bottom: 20px;
+                        }
+                        .profile-image {
+                            flex-shrink: 0;
+                            width: 120px;
+                            height: 120px;
+                            border-radius: 50%;
+                            overflow: hidden;
+                            border: 2px solid #38b993;
+                        }
+                        .profile-image img {
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                        }
+                        .profile-info {
+                            margin-left: 20px;
+                        }
+                        .profile-info h2 {
+                            margin: 0;
+                            font-size: 1.8rem;
+                            color: #38b993;
+                        }
+                        .profile-info p {
+                            margin: 5px 0;
+                            font-size: 1.1rem;
+                            color: #555;
+                        }
+                        .severity-level {
+                            font-weight: bold;
+                            color: #d62828;
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${profileContainer.outerHTML}
+                </body>
+            </html>
+        `);
+
+        // Close the document and initiate printing
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
+    }
+
+    // Retrieve the total distraction score value from the page
+    let distractionScore = parseFloat(document.getElementById("distraction-score").innerText.replace("Distraction Score: ", "").trim());
+
+    // Remove decimals using Math.floor() or parseInt()
+    distractionScore = Math.floor(distractionScore);  // You can also use Math.round() or parseInt()
+
+    // Display the updated score back on the page
+    document.getElementById("distraction-score").innerHTML = `<span>Distraction Score: ${distractionScore}</span>`;
+</script>
+
+<script>
+    // Collapsible functionality for questionnaire responses
+    document.querySelectorAll(".collapsible").forEach(function (button) {
+        button.addEventListener("click", function () {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        });
+    });
+
+
+</script>
+
+
+<style>
+    .print-button-container {
+        text-align: right;
+        margin-top: -40px; /* Adjust based on your layout */
+        margin-right: 10px; /* Add some spacing */
+    }
+
+    .print-icon {
+        font-size: 1.5rem;
+        color: #38b993;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+        .print-icon:hover {
+            color: #2a7c6b;
+        }
+
+    .collapsible {
+        background-color: #38b993;
+        color: white;
+        cursor: pointer;
+        padding: 10px;
+        width: 100%;
+        text-align: left;
+        border: none;
+        outline: none;
+        font-size: 15px;
+    }
+
+        .collapsible:after {
+            content: " ▼";
+        }
+
+    .active:after {
+        content: " ▲";
+    }
+
+    .content {
+        padding: 0 18px;
+        display: none;
+        overflow: hidden;
+        background-color: #f1f1f1;
+    }
+
+    .response-list {
+        list-style-type: none;
+        padding-left: 0;
+    }
+
+        .response-list li {
+            margin: 5px 0;
+            background-color: #e9f5ff;
+            border-left: 4px solid #38b993;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+            .response-list li span {
+                font-weight: bold;
+                color: #555;
+            }
+
+    #patients {
+        background-color: white;
+        padding: 15px;
+        border: 2px solid #38b993;
+        border-radius: 8px;
+        width: 100%;
+        max-width: 600px;
+        margin: 20px auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #patient-profile-page {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        padding: 20px;
+    }
+
+        #patient-profile-page h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+    .patient-profile-container {
+        background-color: #fff;
+        border: 2px solid #38b993;
+        border-radius: 12px;
+        margin: 20px auto;
+        padding: 20px;
+        width: 90%;
+        max-width: 800px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .profile-image {
+        flex-shrink: 0;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid #38b993;
+    }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .profile-info {
+        margin-left: 20px;
+    }
+
+        .profile-info h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #38b993;
+        }
+
+        .profile-info p {
+            margin: 5px 0;
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+    .severity-level {
+        font-weight: bold;
+        color: #d62828;
+    }
+
+    .interpretation {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+    .search-form input {
+        padding: 10px;
+        border: 2px solid #38b993;
+        border-radius: 8px;
+        margin-right: 10px;
+        font-size: 1rem;
+        width: 250px;
+    }
+
+    .search-form button {
+        background-color: #38b993;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .search-form button:hover {
+            background-color: #2e9478;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+</style>
+
+    {% endblock %}

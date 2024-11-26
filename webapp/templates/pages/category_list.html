@@ -1,0 +1,46 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<h1>Categories</h1>
+<a href="{% url 'category_list' %}" class="button">Back to Categories</a>
+
+
+{% for category in categories %}
+<div class="category-box">
+    <img src="{{ category.image.url }}" alt="{{ category.name }}"><br />
+    <p> <i> {{category.description}}</i></p><br />
+    <div class="title">{{ category.name }}</div>
+    <a href="{% url 'category_detail' category.slug %}" class="view-details">View Details</a>
+</div>
+
+
+{% endfor %}
+
+{% if user.is_authenticated and user.is_superuser %}
+
+<div class="profile-add-button">
+    <a href="http://127.0.0.1:8000/addcategory/" class="profile-circle-button">+</a>
+</div>
+
+{% endif %}
+
+<style>
+    
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3ea086; /* Green background */
+        color: white; /* White text */
+        text-decoration: none;
+        border-radius: 5px; /* Rounded corners */
+        transition: background-color 0.3s ease; /* Smooth transition */
+        margin-left: 1350px;
+    }
+
+        .button:hover {
+            background-color: #2c7763; /* Darker green on hover */
+        }
+
+</style>
+{% endblock  %}

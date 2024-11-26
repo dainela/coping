@@ -1,0 +1,407 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<div class="profile-container">
+    <!-- Left Section with Profile Picture, Basic Info, and Contact Info -->
+    <div class="profile-sidebar">
+        <div class="profile-picture">
+            {% if psychologist.image %}
+            <img src="{{ psychologist.image.url }}" alt="Profile Picture">
+            {% else %}
+            <img src="{% static 'default-profile.png' %}" alt="Default Profile Picture">
+            {% endif %}
+        </div>
+        <h2>{{ psychologist.user.first_name }} {{ psychologist.user.last_name }}</h2>
+        <a href="{% url 'edit_psychview' psychologist.id %}" class="edit-profile-button">
+            <ion-icon name="create-outline" class="icon"></ion-icon> Edit Profile
+        </a>
+        <a href="http://127.0.0.1:8000/videocall/" target="_blank" class="video-call-button">
+            <ion-icon name="videocam-outline" class="icon"></ion-icon> Video Call
+        </a>
+
+        <!-- Availability Form -->
+        <form method="POST" class="availability-form" action="{% url 'set_availability' psychologist.id %}">
+            {% csrf_token %}
+            <label for="availability">Set Availability:</label><br>
+            <input type="radio" id="Available" class="availabilitylabel" name="availability" value="Available" {% if availability and availability.status == 'Available' %}checked{% endif %}> Available
+            <input type="radio" id="Unavailable" class="availabilitylabel" name="availability" value="Unavailable" {% if availability and availability.status == 'Unavailable' %}checked{% endif %}> Not Available
+            <button type="submit">Save</button>
+        </form>
+
+        <!-- Contact Information Section -->
+        <div class="profile-details">
+            <h3>Contact Information</h3>
+            <p><strong>Email:</strong> {{ psychologist.user.email }}</p>
+            <p><strong>Phone:</strong> {{ psychologist.contact_number }}</p>
+            <p><strong>Address:</strong> {{ psychologist.qualification }}</p>
+            <p><strong>Expertise:</strong> {{ psychologist.area_of_expertise }}</p>
+        </div>
+    </div>
+
+    <!-- Right Section with Table -->
+    <div class="profile-table-container">
+        <table class="profile-table">
+            <thead>
+                <tr>
+                    <th>Sender</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                    <th>View</th>
+                    <th>Accept</th>
+                    <th>Pending</th>
+                    <th>Reject</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for message in messages %}
+                <tr>
+                    <td>{{ message.sender.username }}</td>
+                    <td>{{ message.severity }}</td>
+                    <td>{{ message.get_status_display }}</td>
+                    <td>
+                        <a href="{% url 'psychprofile' psychologist.id message.sender.id %}" class="view-link">View Message</a>
+                    </td>
+                    <td>
+                        {% if not message.is_accepted %}
+                        <form class="psychview" method="POST" action="{% url 'accept_message' message.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success">Accept</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form class="psychview" method="POST" action="{% url 'pending_message' message.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-wow">Pending</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form class="psychview" method="POST" action="{% url 'reject_message' message.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+    <style>
+
+    /* General Layout */
+    .profile-container {
+        display: flex;
+        flex-direction: column; /* Stack the sidebar and table vertically */
+        max-width: 500px;
+        margin: 0 auto;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
+        margin-right: 600px;
+
+    }
+
+    /* Sidebar Section (Top) */
+    .profile-sidebar {
+        display: flex;
+        flex-direction: column; /* Stack content vertically */
+        align-items: center;
+        background-color: #38b993;
+        color: #fff;
+        padding: 70px;
+        text-align: center;
+        border-radius: 8px;
+        margin-bottom: 30px; /* Add space below the sidebar */
+        position: relative;
+    }
+
+    /* Profile Picture */
+    .profile-picture img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        margin-bottom: 10px;
+        margin-right: 10px;
+        margin-top: -10px;
+    }
+
+    .profile-sidebar h2 {
+        margin: 10px 0;
+        font-size: 1.5rem;
+        margin-right: 10px;
+    }
+
+    /* Contact Information inside Sidebar */
+    .profile-details {
+        position: absolute;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: left;
+        color: #fff;
+        font-size: 1.1rem;
+        width: 90%; /* Adjust size as necessary */
+        margin-right: 20px;
+        margin-top: 260px;
+        text-align: center;
+
+    }
+
+    .profile-details h3 {
+        font-size: 1.1rem;
+        color: #fff;
+        margin-bottom: 10px;
+    }
+
+    .profile-details p {
+        margin: 5px 0;
+        font-size: 0.8rem;
+    }
+
+    /* Buttons with Ionicons */
+    .edit-profile-button,
+    .video-call-button {
+        margin-right: 10px;
+         margin-bottom: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #fff;
+        color: #2e8b57;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        font-size: 1rem;
+        text-decoration: none;
+        text-align: center;
+        transition: background-color 0.3s;
+    }
+
+    .edit-profile-button:hover,
+    .video-call-button:hover {
+        background-color: #2a8a6d;
+        color: white;
+    }
+
+    .icon {
+        margin-right: 8px;
+        font-size: 1.2rem;
+    }
+
+    /* Table Section */
+    .profile-table-container .profile-table {
+        width: 280%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        margin-left: -350px;
+        margin-right: 100px;
+ 
+    }
+
+    .profile-table-container .profile-table th,
+    .profile-table-container .profile-table td {
+        padding: 10px;
+        border: 1px solid #38b993;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+   /* Button Styles */
+.btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Smooth transition for all properties */
+    font-weight: bold;
+}
+
+/* Hover effects for all buttons */
+.btn:hover {
+    transform: translateY(-2px); /* Slight lift on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+/* Success Button */
+.btn-success {
+    background-color: #28a745;
+    color: white;
+    transition: background-color 0.3s ease; /* Smooth background change */
+}
+
+.btn-success:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+/* Danger Button */
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.btn-danger:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
+
+/* Wow Button */
+.btn-wow {
+    background-color: #6c757d;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.btn-wow:hover {
+    background-color: #5a6268; /* Darker grey on hover */
+}
+
+/* View Link Style */
+.view-link {
+    color: #2e8b57;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.view-link:hover {
+    color: #218c3c; /* Darker green on hover */
+}
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .profile-container {
+            padding: 10px;
+        }
+
+        .profile-sidebar {
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .profile-details {
+            position: static;
+            margin-top: 15px;
+        }
+
+        .profile-table th,
+        .profile-table td {
+            font-size: 0.8rem;
+        }
+
+        .edit-profile-button,
+        .video-call-button {
+            font-size: 0.9rem;
+            padding: 5px 10px;
+        }
+    }
+
+
+
+        
+    /*availability*/
+
+
+    .availability-form  {
+        color: black;
+    }
+
+    .availability {
+        color: black;
+        
+    }
+    .psychview {
+        background-color: #ffffff;
+    }
+    .availability-form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px; /* Add spacing between form elements */
+        max-width: 400px; /* Set a max-width for the form */
+        margin: 0 auto; /* Center the form */
+        padding: 20px;
+        border: 3px solid #38b993;
+        border-radius: 8px;
+        background-color: #f9f9f9; /* Light background */
+        margin-top: -300px;
+        margin-right: 800px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-left: 1500px;
+    }
+
+        /* Style the form heading */
+        .availability-form h3 {
+            text-align: center;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            font-weight: bold;
+            
+          
+        }
+
+     /* Style the radio buttons */
+.availability-form input[type="radio"] {
+    margin-right: 10px;
+    margin-left: 25px;
+    margin-top: 10px;
+    transition: transform 0.2s ease; /* Add smooth transition for hover effect */
+}
+
+/* Hover effect for radio buttons */
+.availability-form input[type="radio"]:hover {
+    transform: scale(1.2); /* Slightly increase size on hover */
+}
+
+
+        /* Style the labels for radio buttons */
+        .availability-form label {
+            font-size: 1.1em;
+            cursor: pointer;
+            color: black;
+         
+        }
+
+        
+        /* Add bold and color styling based on availability */
+        .availability-form input[type="radio"]:checked + label {
+            font-weight: bold;
+            color: green; /* Green for available */
+        }
+
+        .availability-form input[type="radio"]:not(:checked) + label {
+            font-weight: normal;
+            color: red; /* Red for not available */
+            
+        }
+
+        /* Hover effect on the labels */
+        .availability-form label:hover {
+            text-decoration: underline;
+        }
+
+        /* Style the submit button */
+        .availability-form button {
+            padding: 10px 15px;
+            background-color: #38b993;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        
+        }
+
+            /* Button hover effect */
+            .availability-form button:hover {
+                background-color: #288569;
+            }
+</style>
+
+        {% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<h1>Add New Coping Technique</h1>
+<br>
+
+<form class = "addcategory" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ category_form.as_p }}  <!-- Render the category form fields -->
+    <button class="subbtn" type="submit">Add Category</button>
+</form>
+
+<a href="{% url 'add_subcategory' %}" id="backbtn" class="button">Add Sub Categories</a>
+
+<style>
+
+    .addcategory{
+        margin-left: 100px;
+        margin-right: 100px;
+
+}
+
+h1{
+    text-align: center;
+}
+    .button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3ea086; /* Green background */
+    color: white; /* White text */
+    text-decoration: none;
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s ease; /* Smooth transition */
+    margin-left: 1350px;
+    margin-top: 10px;
+    }
+
+.button:hover {
+    background-color: #2c7763; /* Darker green on hover */
+}
+
+</style>
+{% endblock%}

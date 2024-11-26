@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap');
+
+.home{
+    --green:#16a085;
+--black:#444;
+--light-color:#111;
+--box-shadow:.5rem .5rem 0 rgba(22, 160, 133, .2);
+--text-shadow:.4rem .4rem 0 rgba(0, 0, 0, .2);
+--border:.2rem solid var(--green);
+}
+
+.home h3{
+   
+    position: relative;
+    left: -40px;
+    top: 5px;
+    
+
+}
+.home p{
+   
+    position: relative;
+    left: -40px;
+    top: 5px;
+    margin-left: 1px;
+    margin-right: 20px;
+
+}
+
+.home .row .image .desc h3 {
+    font-size: 1.5rem;
+
+}
+    .home .row{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap:5rem;
+}
+
+.home .row .image{
+    flex:1 1 15rem;
+}
+
+.home .row .image img{
+    position: relative;
+    left: -40px;
+    width: 110%;
+    height: 140%;
+   
+}
+
+ .home .row .desc{
+    flex:2 2 1rem;
+
+} 
+
+.home .row .desc h3{
+    margin-top: 14rem;
+    color: var(--black);
+    text-shadow: var(--text-shadow);
+    font-size: 50px;
+    line-height: 1.8;
+  
+
+}
+
+.home .row .desc p{
+    color: var(--light-color);
+    padding:1rem 0  ;
+    font-size: 27px;
+    line-height: 1.8;
+    left: -40px;
+    width: 100%;
+
+}
+
+.home .btn{
+  
+    display: inline-block;
+    margin-left: -13rem;
+    padding: .6rem;
+    padding-left: 1rem;
+    border:var(--border);
+    border-radius: .5rem;
+    box-shadow: var(--box-shadow);
+    color:var(--green);
+    cursor: pointer;
+    font-size: 2.5rem;
+    background: #fff;
+    margin-top: 13rem;
+    margin-left: 1px;
+   
+}
+
+
+.home .btn span{
+    border-radius: .5rem;
+    background: var(--green);
+    color:#fff;
+    margin-left: .5rem;
+}
+
+.home .btn:hover{
+    background: var(--green);
+    color:#fff;
+}
+
+.home .btn:hover span{
+    color: var(--green);
+    background:#fff;
+    margin-left: 0.5rem;
+}
+
+@media (min-width: 480px) {
+    .home .row .desc h3{
+        margin-top: 14rem;
+        font-size: 40px;
+        line-height: 1.8;
+
+    }
+    .home .row .desc p{
+        padding:1rem 0rem  ;
+        font-size: 20px;
+        line-height: 2.7;
+    }
+    .home .btn{
+  
+        cursor: pointer;
+        font-size: 1.5rem;
+
+
+    }
+
+}
+
+
+/*more*/
+
+
+.more{
+    --green:#16a085;
+    --black:#444;
+    --light-color:#111;
+    --box-shadow:.5rem .5rem 0 rgba(22, 160, 133, .2);
+    --text-shadow:.4rem .4rem 0 rgba(0, 0, 0, .2);
+    --border:.2rem solid var(--green);
+    margin-top: 120px;
+}
+
+.more h3{
+color: var(--black);
+text-shadow: var(--text-shadow);
+font-size: 40px;
+line-height: 1.8;
+font-size: 30px;
+margin-left: 20px;
+margin-right: 20px;
+top: 5px;
+}
+
+.more p{
+line-height: 2;
+margin-left: 20px;
+margin-right: 0px;
+text-align: left;
+font-size: 20px;
+left: -40px;
+top: 5px;
+}
+
+.more .btn{
+display: inline-block;
+margin-top: 1rem;
+margin-left: -3rem;
+padding: .6rem;
+padding-left: 1rem;
+border:var(--border);
+border-radius: .5rem;
+box-shadow: var(--box-shadow);
+color:var(--green);
+cursor: pointer;
+font-size: 1rem;
+background: #fff;
+}
+
+
+.more .btn:hover{
+background: var(--green);
+color:#fff;
+}
+
+.more .btn:hover span{
+color: white;
+
+margin-left: 0.5rem;
+} 

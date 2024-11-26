@@ -1,0 +1,418 @@
+﻿{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+<a href="{% url 'category_list' %}" class="button">Back to Categories</a>
+<style>
+    
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3ea086; /* Green background */
+        color: white; /* White text */
+        text-decoration: none;
+        border-radius: 5px; /* Rounded corners */
+        transition: background-color 0.3s ease; /* Smooth transition */
+        margin-left: 1350px;
+    }
+
+        .button:hover {
+            background-color: #2c7763; /* Darker green on hover */
+        }
+        </style>
+<div class="todo-container">
+    <h1 class="todo-header">To-Do List</h1>
+
+    <!-- Task Form -->
+    <form class="todo-form" action="{% url 'add_task' %}" method="POST">
+        {% csrf_token %}
+        <input type="text" name="title" placeholder="Task title" class="todo-input" required>
+
+        <textarea name="notes" placeholder="Task notes (optional)" class="todo-input"></textarea>
+
+        <input type="datetime-local" name="deadline" class="todo-input" required>
+
+        <!-- Task Priority Dropdown -->
+        <select name="priority" class="todo-input" required>
+            <option value="low">Low Priority</option>
+            <option value="medium">Medium Priority</option>
+            <option value="high">High Priority</option>
+        </select>
+
+        <!-- Task Category Dropdown -->
+        <select name="category" class="todo-input" required>
+            <option value="work">Work</option>
+            <option value="personal">Personal</option>
+            <option value="shopping">Shopping</option>
+        </select>
+
+        <button type="submit" class="todo-button1">Add Task</button>
+    </form>
+
+    <!-- Task Sorting and Completion Progress -->
+    <div class="todo-options">
+        <button class="todo-button" onclick="sortTasks('priority')">Sort by Priority</button>
+        <button class="todo-button" onclick="sortTasks('deadline')">Sort by Deadline</button>
+        <button class="todo-button" onclick="clearCompletedTasks()">Clear Completed Tasks</button>
+    </div>
+
+    <div class="progress-bar-container">
+        <span class="progress-text">Tasks Completed:</span>
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Task List -->
+    <ul class="todo-list" id="taskList">
+        {% for task in tasks %}
+        <li class="todo-item {% if task.is_completed %}todo-completed{% endif %}" id="task-{{ task.id }}">
+            <div class="task-details">
+                <span class="task-title">{{ task.title }}</span>
+                <span class="task-category">{{ task.category }}</span>
+
+                <span class="task-deadline">
+                    Deadline: {{ task.deadline|date:"M d, Y h:i A" }}
+                </span>
+                <span class="task-priority">
+                    Priority: {{ task.priority }}
+                </span>
+                {% if task.notes %}
+                <div class="task-notes">
+                    <strong>Notes:</strong> {{ task.notes }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="task-actions">
+                <button class="action-button todo-button" onclick="updateTask({{ task.id }})">✔</button>
+                <button class="action-button delete-button" onclick="deleteTask({{ task.id }})">🗑</button>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Collapsible Section for Deleted Tasks -->
+    <div class="collapsible-section">
+        <button type="button" class="collapsible">Deleted Tasks</button>
+        <div class="content" id="deletedTasksContainer">
+            <ul class="todo-list" id="deletedTasksList">
+                {% for task in deleted_tasks %}
+                <li class="todo-item todo-completed" id="task-{{ task.id }}">
+                    <div class="task-details">
+                        <span class="task-title">{{ task.title }}</span>
+                        <span class="task-category">{{ task.category }}</span>
+
+                        <span class="task-deadline">
+                            Deadline: {{ task.deadline|date:"M d, Y h:i A" }}
+                        </span>
+                        <span class="task-priority">
+                            Priority: {{ task.priority }}
+                        </span>
+                        {% if task.notes %}
+                        <div class="task-notes">
+                            <strong>Notes:</strong> {{ task.notes }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="task-actions">
+                        <button class="action-button todo-button" onclick="updateTask({{ task.id }})">✔</button>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+
+    <script>
+    let completedTaskCount = {{ completed_task_count }};
+    const totalTasks = {{ total_tasks }};
+
+    // Update Task Completion Status
+    function updateTask(taskId) {
+        fetch(`/update/${taskId}/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const taskElement = document.querySelector(`#task-${taskId}`);
+                taskElement.classList.add('todo-completed');
+
+                // Increment completed task count
+                completedTaskCount++;
+                updateProgressBar();
+            }
+        });
+    }
+
+    // Update Progress Bar
+    function updateProgressBar() {
+        const progressBar = document.getElementById('progressBar');
+        const progressPercentage = (completedTaskCount / totalTasks) * 100;
+        progressBar.style.width = `${progressPercentage}%`;
+    }
+
+        function deleteTask(taskId) {
+            fetch(`/delete/${taskId}/`, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const taskElement = document.querySelector(`#task-${taskId}`);
+                        const deletedTasksList = document.getElementById('deletedTasksList');
+
+                        // Clone and move the task
+                        const taskClone = taskElement.cloneNode(true);
+                        deletedTasksList.appendChild(taskClone);
+                        taskElement.remove();
+                    } else {
+                        console.error('Failed to delete task:', data.error);
+                    }
+                });
+        }
+
+
+    // Clear Completed Tasks (Move them to Deleted Tasks)
+    function clearCompletedTasks() {
+        const taskList = document.getElementById('taskList');
+        const completedTasks = taskList.querySelectorAll('.todo-completed');
+
+        completedTasks.forEach(task => {
+            const deletedTasksList = document.getElementById('deletedTasksList');
+            const taskClone = task.cloneNode(true); // Clone the completed task
+            deletedTasksList.appendChild(taskClone); // Add to deleted tasks section
+            task.remove(); // Remove from main task list
+
+            // Send an AJAX request to mark the task as deleted in the backend
+            const taskId = task.id.split('-')[1];
+            fetch(`/delete/${taskId}/`, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle any success or error here
+                });
+        });
+    }
+        // Restore Task (Move back to the main task list)
+        function restoreTask(taskId) {
+            fetch(`/restore/${taskId}/`, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Move the task back to the main list
+                        const taskElement = document.querySelector(`#task-${taskId}`);
+                        const taskList = document.getElementById('taskList');
+                        taskList.appendChild(taskElement);  // Move the task back to the task list
+                        taskElement.classList.remove('todo-completed');
+
+                        // Remove from the deleted tasks section
+                        const deletedTasksList = document.getElementById('deletedTasksList');
+                        deletedTasksList.removeChild(taskElement);
+
+                        // Optionally, update the task's deleted status in the database
+                        taskElement.deleted = false;
+                    }
+                });
+        }
+
+
+    document.querySelector('.collapsible').addEventListener('click', function () {
+        const content = document.getElementById('deletedTasksContainer');
+        content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+    });
+    </script>
+
+    <style>
+        .todo-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #38b993;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            border: 2px solid #38b993;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+
+        .todo-header {
+            font-size: 2em;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .todo-input {
+            width: 100%;
+            max-width: 700px;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .todo-button {
+            background-color: #277c63;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 10px 0;
+        }
+
+            .todo-button:hover {
+                background-color: #1c5c49;
+            }
+
+            .todo-button1 {
+            background-color: #277c63;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 10px 0;
+            margin-left: 300px;
+            margin-bottom: -200px;
+        }
+
+            .todo-button1:hover {
+                background-color: #1c5c49;
+            }
+
+        .todo-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+            .todo-item.todo-completed {
+                background-color: #d4edda;
+                border-color: #c3e6cb;
+                color: #155724;
+            }
+
+        .task-title {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .task-category,
+        .task-deadline,
+        .task-priority {
+            font-size: 0.9em;
+            color: #777;
+            margin-top: 5px;
+        }
+
+        .task-notes {
+            font-size: 0.9em;
+            margin-top: 10px;
+            color: #444;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-button,
+        .delete-button {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 50%;
+            font-size: 1.5em;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .action-button:hover,
+            .delete-button:hover {
+                background-color: #f1b0b7;
+            }
+
+        .progress-bar-container {
+            margin-top: 20px;
+            font-size: 1.1em;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background-color: #28a745;
+            border-radius: 5px;
+            width: 0%;
+            padding: 20px;
+        }
+
+        .progress-text {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .todo-options {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        /* Style for collapsible section */
+        .collapsible {
+            background-color: #777;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            font-size: 15px;
+        }
+
+            .collapsible:hover {
+                background-color: #555;
+            }
+
+        /* Collapsible content (hidden by default) */
+        .content {
+            padding: 10px;
+            display: none;
+            overflow: hidden;
+            background-color: #f1f1f1;
+        }
+
+        #deletedTasksContainer {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+
+    {% endblock %}

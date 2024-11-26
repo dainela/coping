@@ -1,0 +1,127 @@
+  {% extends 'pages/index.html' %}
+    {% load static %}
+    {% block content %}
+
+<script src="{% static 'js/mood.js'%}" defer></script>
+<link rel="icon" type="image/x-icon" href="{% static 'images/marby.jpg' %}">
+<link rel="stylesheet" type="text/css" href="{% static '/css/about.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+
+<button onclick="topFunction()" id="myBtn" title="Go to top">Back</button>
+<script>
+    // Get the button
+    let mybutton = document.getElementById("myBtn");
+
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function () { scrollFunction() };
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            mybutton.style.display = "block";
+        } else {
+            mybutton.style.display = "none";
+        }
+    }
+
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+</script>
+
+<section class="about" id="about">
+
+    <h1 class="heading"> </h1>
+
+    <div class="row">
+
+        <div class="image">
+            <image alt="logo" width="1200" height="700" class="d-inline-block align-text-top" src="{% static 'media/appointment-img.svg'%}"></image>
+        </div>
+
+        <div class="content">
+            <h3>SERVICES</h3>
+            <p>
+                At BrighterMind, we provide a comprehensive web-based application platform designed to support the mental well-being of students at Cavite State University—Bacoor City Campus.
+                Our platform offers a several services to help students understand and manage their anxiety. By using BrighterMind, students can improve their mental well-being.
+            </p>
+            <a href="#services" class="btn"> Our Services <span class="   "></span> </a>
+        </div>
+
+    </div>
+
+</section>
+<body>
+
+    <section class="services" id="services">
+        <div class="container">
+
+            <a href="http://127.0.0.1:8000" class="box-link">
+                <div class="box">
+                    <h2>01</h2>
+                    <h3>Anxiety Awareness</h3>
+                    <p>This system provides anxiety informations that allows students to understand what anxiety is.</p>
+                </div>
+            </a>
+
+
+
+            <a href="http://127.0.0.1:8000/categories/" class="box-link">
+                <div class="box">
+                    <h2>02</h2>
+                    <h3>Coping <br> Techniques</h3>
+                    <p>This system provides different coping techniques that helps students to manage their anxiety.</p>
+                </div>
+            </a>
+
+            <a href="http://127.0.0.1:8000/prof/" class="box-link">
+                <div class="box">
+                    <h2>03</h2>
+                    <h3>Registered Psychologists</h3>
+                    <p>This system gives students access to Registered Psychologists for those who need counselling and/or consultation.</p>
+                </div>
+            </a>
+
+            <a href="http://127.0.0.1:8000/mood/" class="box-link">
+                <div class="box">
+                    <h2>04</h2>
+                    <h3>Mood Tracker</h3>
+                    <p>This system grants students a mood tracker that allow them to monitor and express their daily thoughts and emotions.</p>
+                </div>
+            </a>
+
+            <a href="http://127.0.0.1:8000/categories/social-coping/online-community/" class="box-link">
+                <div class="box">
+                    <h2>05</h2>
+                    <h3>Online <br>Community Chat</h3>
+                    <p>This system offers students an online community chat understand each other's thoughts and feelings as they cope with anxiety.</p>
+                </div>
+            </a>
+
+            <a href="http://127.0.0.1:8000/gad7/" class="box-link">
+                <div class="box">
+                    <h2>06</h2>
+                    <h3>GAD-7 Assessment</h3>
+                    <p>This system encourages students to take GAD-7 assessment as screening tool to determine if they are experiencing symptoms of anxiety</p>
+                </div>
+            </a>
+
+            <a href="http://127.0.0.1:8000/hotline/" class="box-link">
+                <div class="box">
+                    <h2>07</h2>
+                    <h3> Hotline </h3>
+                    <p>This system provides students free mental health hotlines to get immediate support if assigned registered psychologists are not available.</p>
+                </div>
+            </a>
+
+
+        </div>
+    </section>
+
+</body>
+
+
+    {% endblock  %}

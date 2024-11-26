@@ -1,0 +1,245 @@
+﻿{% load static %}
+{% block content %}
+
+<body>
+    <div class="container">
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="leaf-outline"></ion-icon>
+                        </span>
+                        <span class="title"> Brighter Mind</span>
+                    </a>
+                </li>
+
+
+                {% if not user.is_authenticated %}
+
+                <li>
+                    <a href="http://127.0.0.1:8000/signin/">
+                        <span class="icon">
+                            <ion-icon name="log-in-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign In</span>
+                    </a>
+                </li>
+
+
+                {% endif %}
+                <li>
+                    <a href=http://127.0.0.1:8000>
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Anxiety Awareness</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="http://127.0.0.1:8000/about/">
+                        <span class="icon">
+                            <ion-icon name="server-outline"></ion-icon>
+                        </span>
+                        <span class="title">Services</span>
+                    </a>
+                </li>
+
+                {% if user.is_authenticated %}
+                <li>
+                    <a href="http://127.0.0.1:8000/categories">
+                        <span class="icon">
+                            <ion-icon name="extension-puzzle-outline"></ion-icon>
+                        </span>
+                        <span class="title">Coping Techniques</span>
+                    </a>
+                </li>
+
+
+                <li>
+                    <a href="http://127.0.0.1:8000/gad7">
+                        <span class="icon">
+                            <ion-icon name="newspaper-outline"></ion-icon>
+                        </span>
+                        <span class="title">GAD-7 Assessment</span>
+                    </a>
+                </li>
+
+              {% if not user.is_staff %}
+                <li>
+                    <a href="http://127.0.0.1:8000/profile/">
+                        <span class="icon">
+                            <ion-icon name="person-circle-outline"></ion-icon>
+                        </span>
+                        <span class="title">Profile</span>
+                    </a>
+                </li>
+                {% endif %}
+                <li>
+                    <a href="http://127.0.0.1:8000/mood/">
+                        <span class="icon">
+                            <ion-icon name="happy-outline"></ion-icon>
+                        </span>
+                        <span class="title">Mood</span>
+                    </a>
+                </li>
+
+
+
+                <li>
+                    <a href="http://127.0.0.1:8000/prof/">
+                        <span class="icon">
+                            <ion-icon name="medical-outline"></ion-icon>
+                        </span>
+                        <span class="title">Psychologists</span>
+                    </a>
+                </li>
+
+                {% if not user.is_superuser and not user.is_staff %}
+                <li>
+                    <a href="http://127.0.0.1:8000/feedback/">
+                        <span class="icon">
+                            <ion-icon name="chatbubble-outline"></ion-icon>
+                        </span>
+                        <span class="title">Feedback</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="http://127.0.0.1:8000/hotline/">
+                        <span class="icon">
+                            <ion-icon name="medkit-outline"></ion-icon>
+                        </span>
+                        <span class="title">Hotline</span>
+                    </a>
+                </li>
+                {%endif%}
+             
+
+                <li>
+                    <a href="http://127.0.0.1:8000/categories/social-coping/online-community/">
+                        <span class="icon">
+                            <ion-icon name="earth-outline"></ion-icon>
+                        </span>
+                        <span class="title">Online Community</span>
+                    </a>
+                </li>
+
+
+                {% endif %}
+
+
+
+
+                {% if user.is_superuser or user.is_staff %}
+                <li>
+                    <a href="http://127.0.0.1:8000/viewpatient/">
+                        <span class="icon">
+                            <ion-icon name="happy-outline"></ion-icon>
+                        </span>
+                        <span class="title">Our Patients</span>
+                    </a>
+                </li>
+
+                <li>
+                    {% if psychologist %}
+                    <a href="{% url 'psychview' psychologist.id %}">
+                        <span class="icon">
+                            <ion-icon name="people-outline"></ion-icon>
+                        </span>
+                        <span class="title">Psych Profile</span>
+                    </a>
+                    {% else %}
+                    <span class="title"></span>
+                    {% endif %}
+                </li>
+
+                <li>
+                    <a href="http://127.0.0.1:8000/analytics">
+                        <span class="icon">
+                            <ion-icon name="podium-outline"></ion-icon>
+                        </span>
+                        <span class="title">Analytics</span>
+                    </a>
+                </li>
+
+
+                {% if user.is_superuser  %}
+                <li>
+                    <a href="http://127.0.0.1:8000/viewpsych">
+                        <span class="icon">
+                            <ion-icon name="ear-outline"></ion-icon>
+                        </span>
+                        <span class="title">View Psych</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="http://127.0.0.1:8000/viewfeed/">
+                        <span class="icon">
+                            <ion-icon name="newspaper-outline"></ion-icon>
+                        </span>
+                        <span class="title">View Feedbacks</span>
+                    </a>
+                </li>
+                {% endif %}
+                {% endif %}
+
+
+                {% if user.is_authenticated %}
+                <li>
+                    <a href="{% url 'signout' %}" class="staff-logout-btn" onclick="return confirmLogout();">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+
+                {% endif %}
+
+
+
+
+
+
+            </ul>
+        </div>
+    </div>
+
+
+    <!-- ========================= Main ==================== -->
+    <div class="main">
+        <div class="topbar">
+            <div class="toggle">
+                <ion-icon name="menu-outline"></ion-icon>
+            </div>
+
+
+
+            <div class="user">
+
+            </div>
+        </div>
+
+
+</body>
+
+<style>
+    .notification {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 10px;
+        text-align: center;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+</style>
+
+<script src="{% static 'js/script.js'%}"></script>
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+
+{% endblock %}

@@ -1,0 +1,180 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+}
+
+.container-profile {
+    max-width: 1500px; /* Increased width */
+    margin: 0 auto; /* Center the container horizontally */
+    display: flex;
+    justify-content: center; /* Center the content horizontally */
+    gap: 20px;
+    background-color: #38b993;
+    border: 1px solid #ddd; /* Add a light gray border */
+    box-shadow: 20px 4px 12px rgba(0, 0, 0, 0.1); /* Add shadow effect */
+    margin-top: 100px;
+}
+
+
+    .container-profile h2 {
+        color: white;
+    }
+
+
+/* Profile Sidebar */
+.profile-sidebar {
+    width: 100%; /* Increase the sidebar width */
+    padding: 30px; /* Increased padding */
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 5%;
+}
+
+    .profile-sidebar img {
+        width: 200px; /* Increase the image size */
+        height: 200px; /* Increase the image size */
+        border-radius: 50%; /* Make the image circular */
+        object-fit: cover;
+        border: 5px solid #fbfbfb; /* Add a 5px green border */
+        margin-bottom: 20px; /* Increase bottom margin */
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow effect */
+        margin-right: -10px;
+    }
+
+    .profile-sidebar h2 {
+        font-size: 24px; /* Slightly larger font size */
+        margin-bottom: 10px;
+    }
+
+    .profile-sidebar p {
+        font-size: 16px; /* Slightly larger text */
+        color: #ffffff;
+        margin-bottom: 20px; /* Increase bottom margin */
+    }
+
+    .profile-sidebar .btn-group {
+        display: flex;
+        justify-content: center;
+        gap: 15px; /* Increase gap between buttons */
+        margin-bottom: 25px;
+    }
+
+        .profile-sidebar .btn-group button {
+            padding: 10px 25px; /* Increase button padding */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+    .profile-sidebar button.follow-btn {
+        background-color: #ffffff;
+        color: rgb(0, 0, 0);
+    }
+
+    .profile-sidebar button.message-btn {
+        background-color: #f4f4f4;
+        color: #333;
+    }
+
+    .profile-sidebar .social-icons {
+        display: flex;
+        flex-direction: column;
+        gap: 20px; /* Increase the gap between rows */
+    }
+
+        .profile-sidebar .social-icons a {
+            width: 200px;
+            display: flex; /* Make each icon-text pair a flex container */
+            align-items: center; /* Align icons and text vertically centered */
+            gap: 50px; /* Space between the icon and the text */
+            margin-left: 195px;
+            height: 45px;
+            border: 5px solid #f8f8f8; /* Add a 5px green border */
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow effect */
+            border-radius: 0%;
+        }
+
+            .profile-sidebar .social-icons a i {
+                font-size: 20px; /* Size of the icon */
+                color: #ffffff; /* Icon color */
+                margin-left: 10px;
+            }
+
+            .profile-sidebar .social-icons a span {
+                font-size: 14px; /* Text size */
+                color: #333; /* Text color */
+            }
+
+/* Profile Content */
+.profile-content {
+    margin-top: 7%;
+    width: 65%; /* Increase content width */
+    padding: 30px; /* Increased padding */
+    border-radius: 8px;
+    margin-right: 900px;
+}
+
+    .profile-content .profile-details {
+        margin-bottom: 40px; /* Increased margin between sections */
+        color: white;
+    }
+
+        .profile-content .profile-details h3 {
+            font-size: 18px; /* Slightly larger heading font */
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-right: -200px;
+        }
+
+        .profile-content .profile-details p {
+            margin: 10px 0;
+            font-size: 16px; /* Slightly larger text */
+            color: #333;
+        }
+
+    .profile-content .edit-btn {
+        padding: 10px 25px; /* Increase button size */
+        background-color: #ffffff;
+        color: rgb(0, 0, 0);
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+/* Project Status Section */
+.project-status {
+    display: flex;
+    justify-content: center; /* Center the project cards */
+    gap: 30px; /* Increase gap between cards */
+}
+
+.project-card {
+    width: 48%;
+    background: #f9f9f9;
+    padding: 20px; /* Increase padding */
+    border-radius: 8px;
+    border: 1px solid #ddd; /* Add a light gray border */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Add shadow effect */
+}
+
+    .project-card h4 {
+        font-size: 16px; /* Increase font size */
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    .project-card .progress-bar {
+        width: 100%;
+        background-color: #eee;
+        border-radius: 5px;
+        overflow: hidden;
+        height: 8px; /* Increase the height of the progress bar */
+    }
+
+    .project-card .progress {
+        height: 8px; /* Adjust the progress height */
+        background-color: #38b993;
+        width: 60%; /* Example percentage */
+    }

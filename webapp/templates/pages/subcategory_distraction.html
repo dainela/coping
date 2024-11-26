@@ -1,0 +1,269 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+<a href="{% url 'category_list' %}" class="button">Back to Categories</a>
+<style>
+    
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3ea086; /* Green background */
+        color: white; /* White text */
+        text-decoration: none;
+        border-radius: 5px; /* Rounded corners */
+        transition: background-color 0.3s ease; /* Smooth transition */
+        margin-left: 1350px;
+    }
+
+        .button:hover {
+            background-color: #2c7763; /* Darker green on hover */
+        }
+        </style>
+<div class="distraction-container">
+    <header class="distraction-header">
+        <h1 class="distraction-title">Distraction Coping Technique Game</h1>
+    </header>
+
+    <section class="distraction-content">
+        <p class="distraction-description">Unscramble the letters to form a coping technique word!</p>
+        <div id="word-display" class="distraction-word-display"></div>
+        <input type="text" id="user-input" class="distraction-input" placeholder="Your answer here...">
+        <p> Reach 20 points to finish the game!</p><br />
+        <button id="submit-answer" class="distraction-btn">Submit Answer</button>
+        <button id="skip-word" class="distraction-btn">Skip</button>
+        <div id="score" class="distraction-score">Score: 0</div>
+
+        {% if user.is_authenticated %}
+        <button id="save-score" onclick="saveScore()" class="distraction-btn">Save Scores</button>
+        {% else %}
+        <p>Please log in to save your scores.</p>
+        {% endif %}
+
+        <div id="message" class="distraction-message"></div>
+    </section>
+
+    <footer class="distraction-footer">
+        <p class="distraction-footer-text">"Find a distraction and give your mind a break."</p>
+    </footer>
+</div>
+
+<script>
+    // CSRF Token Retrieval
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Game Variables
+    const wordDisplay = document.getElementById('word-display');
+    const userInput = document.getElementById('user-input');
+    const submitButton = document.getElementById('submit-answer');
+    const skipButton = document.getElementById('skip-word');
+    const saveScoreButton = document.getElementById('save-score');
+    const scoreDisplay = document.getElementById('score');
+    const messageDisplay = document.getElementById('message');
+
+    let score = 0;
+    let currentWord;
+    const words = ['RELAX', 'BREATHE', 'FOCUS', 'DISTRACTION', 'EXERCISE', 'JOURNAL', 'MEDITATE', 'CREATIVITY',
+        'MUSIC', 'YOGA', 'STRETCH', 'CALM', 'BALANCE', 'NATURE', 'LISTEN', 'REFLECT', 'MOVE',
+        'DANCE', 'LAUGH', 'REST'];
+
+    // Motivational Messages
+    const motivationalMessages = [
+        "Great job! Keep it up!",
+        "You're doing awesome! Keep going!",
+        "Fantastic work! You're getting better!",
+        "You're on fire! Keep up the great work!",
+        "Amazing! You're so close!"
+    ];
+
+    // Start the Game
+    function startGame() {
+        score = 0;
+        scoreDisplay.textContent = `Score: ${score}`;
+        userInput.value = '';
+        saveScoreButton.style.display = 'none';
+        messageDisplay.textContent = '';
+        showNextWord();
+    }
+
+    // Display the Next Word
+    function showNextWord() {
+        currentWord = words[Math.floor(Math.random() * words.length)];
+        const scrambledWord = scrambleWord(currentWord);
+        wordDisplay.textContent = scrambledWord;
+    }
+
+    // Scramble a Word
+    function scrambleWord(word) {
+        return word.split('').sort(() => Math.random() - 0.5).join('');
+    }
+
+    // Handle User's Answer
+    function handleAnswer() {
+        const answer = userInput.value.toUpperCase();
+        if (answer === currentWord) {
+            score++;
+            scoreDisplay.textContent = `Score: ${score}`;
+            userInput.value = '';
+
+            // Show motivational message for every 5-point increment
+            if (score % 5 === 0) {
+                const messageIndex = score / 5 - 1; // Get the index based on the score
+                messageDisplay.textContent = motivationalMessages[messageIndex];
+                messageDisplay.style.fontSize = "20px";  // Increased font size
+                messageDisplay.style.color = "#38b993"; // Set color to #38b993
+                setTimeout(() => { messageDisplay.textContent = ''; }, 2000); // Hide message after 2 seconds
+            }
+
+            if (score === 5)  {
+                showBalloons();
+                return;
+            }
+            if (score === 10) {
+                showBalloons();
+                return;
+            }
+            if (score === 15) {
+                showBalloons();
+                return;
+            }
+            if     (score === 20) {
+                messageDisplay.textContent = "Congratulations! You scored 20 points!";
+                saveScoreButton.style.display = 'block';
+
+                // Trigger balloon animation
+                showBalloons();
+                return;
+            }
+
+            showNextWord();
+        } else {
+            messageDisplay.textContent = "Incorrect! Try again.";
+            setTimeout(() => { messageDisplay.textContent = ''; }, 1500);
+        }
+    }
+
+    // Skip the Current Word
+    function skipCurrentWord() {
+        messageDisplay.textContent = `The correct answer was: ${currentWord}`;
+        setTimeout(() => { messageDisplay.textContent = ''; }, 2000);
+        userInput.value = '';
+        showNextWord();
+    }
+
+    // Save Multiple Scores
+    function saveScore() {
+        const saveButton = document.getElementById('save-score');
+        saveButton.disabled = true; // Disable the button to prevent multiple clicks
+
+        // Collect multiple scores in an array
+        const scoresToSave = [score]; // You can add other scores as needed
+
+        fetch('/submit-score/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
+            },
+            body: JSON.stringify({ scores: scoresToSave }), // Send the scores
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message); // Display success or error message
+                if (data.message === "Scores saved successfully!") {
+                    saveButton.style.display = 'none'; // Hide the button after saving
+                } else {
+                    saveButton.disabled = false; // Re-enable if saving fails
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error); // Handle any errors
+                alert("An error occurred while saving the scores.");
+                saveButton.disabled = false; // Re-enable the button
+            });
+    }
+
+    // Function to show multiple balloons with random positions and colors
+    function showBalloons() {
+        for (let i = 0; i < 20; i++) {
+            const balloon = document.createElement('div');
+            balloon.classList.add('balloon');
+
+            // Set random position and color
+            balloon.style.left = `${Math.random() * 100}vw`;
+            balloon.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 75%)`;
+            balloon.style.animation = `floatUp ${3 + Math.random() * 2}s ease-out forwards`;
+
+            document.body.appendChild(balloon);
+
+            // Remove balloon after animation ends
+            balloon.addEventListener('animationend', () => {
+                balloon.remove();
+            });
+        }
+    }
+
+    // Event Listeners
+    submitButton.addEventListener('click', handleAnswer);
+    userInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            handleAnswer();
+        }
+    });
+    skipButton.addEventListener('click', skipCurrentWord);
+    saveScoreButton.addEventListener('click', saveScore);
+
+    // Start the Game on Page Load
+    startGame();
+
+</script>
+
+<style>
+.balloon {
+    position: fixed;
+    bottom: 0;
+    width: 50px;
+    height: 70px;
+    border-radius: 50%;
+    animation: floatUp 3s ease-out forwards;
+}
+
+@keyframes floatUp {
+    0% {
+        bottom: 0;
+        opacity: 1;
+    }
+    100% {
+        bottom: 100vh;
+        opacity: 0;
+    }
+}
+    .distraction-btn {
+        display: inline-block;
+        margin: 5px;
+        padding: 10px 15px;
+        background-color: #38b993;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .distraction-btn:hover {
+        background-color: #38b993;
+    }
+</style>
+
+{% endblock %}

@@ -1,0 +1,203 @@
+{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<div class="question-container">
+    <span class="question-mark">?</span>
+    <div class="tooltip">
+        Please wait at least 24 hours for a mental health professional to respond
+    </div>
+</div>
+<br />
+<div class="chat-body">
+    <h2>Send Message to {{ user.first_name }} {{ user.last_name }}</h2>
+
+    <!-- Show unread messages notification if there are unread messages -->
+    {% if unread_messages %}
+    <div class="notification">
+        <p>You have {{ unread_messages|length }} new message(s).</p>
+    </div>
+    {% endif %}
+
+    <!-- Chat Box -->
+    <div id="chat-box" class="chat-box">
+        {% for message in messages %}
+        <div class="chat-message-item {% if message.sender == user %}user-message{% else %}admin-message{% endif %}">
+            <strong>{{ message.sender.username }}:</strong> {{ message.content }}
+            <em>{{ message.timestamp }}</em>
+        </div>
+        {% empty %}
+        <p class="no-messages">No messages yet.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Message Form -->
+    <form method="POST" class="message-form" id="message-form">
+        {% csrf_token %}
+        <textarea name="content" placeholder="Type your message..." required></textarea>
+        <button type="submit">Send</button>
+    </form>
+</div>
+
+<style>
+
+    /* Style the question mark container for the top-right corner */
+    .question-container {
+        position: fixed; /* Fixed position */
+        top: 50px; /* Distance from the top */
+        right: 20px; /* Distance from the right edge */
+        display: inline-block;
+    }
+
+    .question-mark {
+        font-size: 24px;
+        background-color: #e0e0e0;
+        color: #000;
+        border-radius: 50%;
+        padding: 10px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    /* Tooltip container */
+    .tooltip {
+        visibility: hidden;
+        width: 250px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 5px;
+        padding: 10px;
+        position: absolute;
+        top: 40px; /* Distance from the question mark */
+        right: 0; /* Align to the right of the container */
+        z-index: 1;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+        /* Tooltip arrow */
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            right: 15px; /* Center the arrow on the tooltip */
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent transparent #333 transparent;
+        }
+
+    /* Show the tooltip on hover */
+    .question-container:hover .tooltip {
+        visibility: visible;
+        opacity: 1;
+    }
+
+/* General body styles for the chat page */
+.chat-body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Chat title */
+.chat-body h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Notification box */
+.notification {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    text-align: center;
+    color: #856404;
+}
+
+/* Chat box */
+.chat-box {
+    max-height: 400px;
+    overflow-y: auto;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+/* Chat messages */
+.chat-message-item {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.chat-message-item:hover {
+    background-color: #f1f1f1;
+    transform: translateX(5px);
+}
+
+.user-message {
+    background-color: #e6f7ff;
+    border-left: 5px solid #1890ff;
+}
+
+.admin-message {
+    background-color: #fff5f5;
+    border-left: 5px solid #ff4d4f;
+}
+
+/* No messages placeholder */
+.no-messages {
+    color: #999;
+    text-align: center;
+    font-style: italic;
+}
+
+/* Message form */
+.message-form {
+    display: flex;
+    gap: 10px;
+}
+
+.message-form textarea {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: none;
+    transition: border-color 0.3s ease;
+}
+
+.message-form textarea:focus {
+    border-color: #1890ff;
+    outline: none;
+}
+
+.message-form button {
+    background-color: #1890ff;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.message-form button:hover {
+    background-color: #40a9ff;
+    transform: scale(1.05);
+}
+</style>
+
+
+{% endblock %}

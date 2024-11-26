@@ -1,0 +1,386 @@
+﻿{% extends 'pages/index.html' %}
+{% load static %}
+{% block content %}
+
+<section class="doctors" id="doctors">
+    <h1 class="doctors-heading">Our <span>Psychologists</span></h1>
+    <div class="box-container">
+        {% for prof in prof %}
+        <div class="box" onclick="openModal('{{ prof.user.first_name }} {{ prof.user.last_name }}', '{{ prof.user.title }}', '{{ prof.bio }}', '{{ prof.address }}', '{{ prof.image.url }}')">
+            <img src="{{ prof.image.url }}" alt="Professional Image" class="profile-img">
+            <h3 class="prof-name">{{ prof.user.first_name }}&nbsp{{ prof.user.last_name }}</h3>
+            <p class="prof-title">{{ prof.title }}</p>
+            <p class="prof-location">{{ prof.location }}</p>
+
+            <div class="status-section">
+                {% if prof.latest_availability %}
+                <p class="availability-status {% if prof.latest_availability.status == 'available' %}available{% else %}not-available{% endif %}">
+                    {{ prof.latest_availability.status|capfirst }}
+                </p>
+                {% else %}
+                <p class="availability-status not-available">Pending</p>
+                {% endif %}
+            </div>
+
+            <div class="contact-icons">
+                <a href="{% url 'chat' prof.id %}" class="emailicon {% if not prof.is_approved %}disabled{% endif %}">
+                    <ion-icon name="chatbox-ellipses-outline"></ion-icon>
+                </a>
+                {% if user.is_superuser %}
+                <a href="http://127.0.0.1:8000/videocall/" class="contacticon {% if not prof.is_approved %}disabled{% endif %}">
+                    <ion-icon name="videocam-outline"></ion-icon>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <p>No professionals found.</p>
+        {% endfor %}
+    </div>
+</section>
+
+
+
+
+{% if user.is_authenticated and user.is_superuser %}
+<div class="profile-add-button">
+    <a href="http://127.0.0.1:8000/createprof/" class="profile-circle-button">+</a>
+</div>
+{% endif %}
+
+<!-- Modal Structure (Only 1 Modal) -->
+<div id="profModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img id="modalImage" src="" alt="Professional Image" class="modal-profile-img">
+        <h3 id="modalName"></h3>
+        <p id="modalTitle"></p>
+        <p id="modalBio"></p>
+        <p id="modalLocation"></p>
+    </div>
+</div>
+
+
+
+
+<!-- Add JavaScript to open and close the modal -->
+<script>
+    function openModal(name, title, bio, location, imageUrl) {
+        document.getElementById('modalName').textContent = name;
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalBio').textContent = bio;
+        document.getElementById('modalLocation').textContent = location;
+        document.getElementById('modalImage').src = imageUrl;
+
+        // Display the modal
+        document.getElementById('profModal').style.display = "block";
+    }
+
+    function closeModal() {
+        // Hide the modal
+        document.getElementById('profModal').style.display = "none";
+    }
+
+    // Close modal if clicked outside the modal content
+    window.onclick = function (event) {
+        if (event.target == document.getElementById('profModal')) {
+            closeModal();
+        }
+    }
+</script>
+
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+        padding-top: 60px;
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+        text-align: center;
+    }
+
+    .close {
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        position: absolute;
+        top: 10px;
+        right: 25px;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .modal-profile-img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin-bottom: 10px;
+    }
+
+    #profModal {
+        display: none;
+    }
+</style>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap');
+
+
+    .doctors {
+        --primary-color: #38b993;
+        --secondary-color: #e4f2ff;
+        --text-color: #fff;
+        --icon-color: #eee;
+        --hover-color: #2d6d57;
+        --border-radius: 10px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .doctors-heading {
+        text-align: center;
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        margin-top: -2rem;
+    }
+
+    .box-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+        padding: 0 5%;
+    }
+
+    .disabled {
+        pointer-events: none;
+        color: grey;
+        opacity: 0.5;
+    }
+
+    .box {
+        background-color: var(--primary-color);
+        color: var(--text-color);
+        border-radius: var(--border-radius);
+        padding: 30px;
+        box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: background-color 0.3s, transform 0.3s;
+        cursor: pointer;
+    }
+
+        .box:hover {
+            background-color: var(--hover-color);
+            transform: scale(1.05);
+        }
+
+    .profile-img {
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        margin-bottom: 20px;
+        border: 4px solid var(--secondary-color);
+    }
+
+    .prof-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 12px 0;
+    }
+
+    .prof-title, .prof-location {
+        font-size: 1.2rem;
+        font-weight: 500;
+        opacity: 0.9;
+    }
+
+    .prof-bio {
+        font-size: 1.1rem;
+        margin: 15px 0;
+        line-height: 1.6;
+    }
+
+    .status-section {
+        background-color: var(--secondary-color);
+        color: var(--primary-color);
+        padding: 8px 12px;
+        border-radius: var(--border-radius);
+        margin: 18px 0;
+        font-size: 1rem;
+    }
+
+    .availability-status {
+        font-weight: bold;
+    }
+
+        /* Green color for available status */
+        .availability-status.available {
+            color: green;
+        }
+
+        /* Red color for not available status */
+        .availability-status.not-available {
+            color: red;
+        }
+
+        /* Optional: Styling for when availability is not set */
+        .availability-status.not-available {
+            color: grey;
+        }
+
+    .contact-icons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 20px;
+        margin-left: -50px;
+    }
+
+        .contact-icons .icon {
+            font-size: 1.5rem;
+            color: var(--icon-color);
+            text-decoration: none;
+            transition: color 0.3s, transform 0.3s;
+            margin-left: 25px;
+        }
+
+        .contact-icons .emailicon {
+            font-size: 1.7rem;
+            color: var(--icon-color);
+            text-decoration: none;
+            transition: color 0.3s, transform 0.3s;
+            margin-left: 50px;
+        }
+
+        .contact-icons .contacticon {
+            font-size: 1.7rem;
+            color: var(--icon-color);
+            text-decoration: none;
+            transition: color 0.3s, transform 0.3s;
+            margin-left: 25px;
+            margin-bottom: 5px;
+        }
+
+
+
+        .contact-icons .icon:hover {
+            color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+
+        .contact-icons .emailicon:hover {
+            color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+
+        .contact-icons .contacticon:hover {
+            color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+
+    button {
+        background-color: var(--secondary-color);
+        color: var(--primary-color);
+        padding: 12px 24px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 15px;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.6);
+        animation: fadeIn 0.5s;
+    }
+
+    .modal-content {
+        background-color: #fff;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 600px;
+        position: relative;
+        text-align: center;
+    }
+
+    .modal-profile-img {
+        border-radius: 50%;
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        margin-bottom: 20px;
+    }
+
+    .modal-content h3 {
+        font-size: 2rem;
+        color: var(--primary-color);
+    }
+
+    .modal-content p {
+        font-size: 1.2rem;
+        margin: 10px 0;
+    }
+
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+</style>
+
+
+
+
+{% endblock %}
